@@ -1,0 +1,1330 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#1a1a2e" />
+    <title>EcoPower – Android Prototype</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+
+    <style>
+      /* =========================================
+           CSS VARIABLES
+           ========================================= */
+      :root {
+        --color-bg-outer: #1a1a2e;
+        --color-frame: #1a1a1a;
+        --color-screen: #000;
+        --color-surface: #121212;
+        --color-text-primary: #fff;
+        --color-text-secondary: rgba(255, 255, 255, 0.7);
+        --color-text-dim: rgba(255, 255, 255, 0.15);
+        --color-accent: #408a71;
+        --color-border-subtle: #333;
+
+        --eco-dark: #091413;
+        --eco-mid-dark: #285a48;
+        --eco-mid: #408a71;
+        --eco-light: #b0e4cc;
+
+        --phone-width: 390px;
+        --phone-height: 844px;
+        --frame-padding: 12px;
+        --border-radius-frame: 50px;
+        --border-radius-screen: 40px;
+
+        --shadow-frame:
+          0 0 0 2px var(--color-border-subtle), 0 0 0 4px var(--color-frame),
+          0 0 0 6px var(--color-border-subtle), 0 30px 60px rgba(0, 0, 0, 0.5),
+          0 0 80px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.03);
+      }
+
+      /* =========================================
+           RESET & BASE
+           ========================================= */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Roboto", system-ui, sans-serif;
+        background: var(--color-bg-outer);
+        color: var(--color-text-primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: hidden;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* =========================================
+           DESKTOP LABEL
+           ========================================= */
+      .desktop-label {
+        position: fixed;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--color-text-dim);
+        font-size: 12px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        font-weight: 300;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      /* =========================================
+           PHONE FRAME
+           ========================================= */
+      .phone-frame {
+        width: var(--phone-width);
+        height: var(--phone-height);
+        background: var(--color-frame);
+        border-radius: var(--border-radius-frame);
+        padding: var(--frame-padding);
+        position: relative;
+        box-shadow: var(--shadow-frame);
+      }
+
+      .phone-frame::before,
+      .phone-frame::after {
+        content: "";
+        position: absolute;
+        background: linear-gradient(to right, #2a2a2a, #444);
+        border-radius: 3px;
+        z-index: 10;
+      }
+
+      .phone-frame::before {
+        right: -4px;
+        top: 180px;
+        width: 4px;
+        height: 70px;
+        border-radius: 0 3px 3px 0;
+      }
+
+      .phone-frame::after {
+        left: -4px;
+        top: 160px;
+        width: 4px;
+        height: 40px;
+        background: linear-gradient(to left, #2a2a2a, #444);
+        border-radius: 3px 0 0 3px;
+        box-shadow:
+          0 55px 0 0 var(--color-border-subtle),
+          0 100px 0 0 var(--color-border-subtle);
+      }
+
+      /* =========================================
+           PHONE SCREEN
+           ========================================= */
+      .phone-screen {
+        width: 100%;
+        height: 100%;
+        background: var(--color-screen);
+        border-radius: var(--border-radius-screen);
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .punch-hole {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 12px;
+        height: 12px;
+        background: var(--color-screen);
+        border-radius: 50%;
+        z-index: 1000;
+        box-shadow:
+          0 0 0 2.5px #111,
+          0 0 0 3.5px var(--color-frame);
+        pointer-events: none;
+      }
+
+      .punch-hole::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 5px;
+        height: 5px;
+        background: radial-gradient(circle, #1a3a5c, #0a1a2a);
+        border-radius: 50%;
+      }
+
+      /* =========================================
+           STATUS BAR
+           ========================================= */
+      .status-bar {
+        height: 44px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 24px;
+        background: transparent;
+        position: relative;
+        z-index: 1001;
+        flex-shrink: 0;
+      }
+
+      .status-time {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        letter-spacing: 0.5px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .status-icons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .status-icons .material-icons {
+        font-size: 16px;
+        color: var(--color-text-primary);
+      }
+
+      .signal-bars {
+        display: flex;
+        align-items: flex-end;
+        gap: 1.5px;
+        height: 12px;
+      }
+
+      .signal-bars .bar {
+        width: 3px;
+        background: var(--color-text-primary);
+        border-radius: 1px;
+      }
+
+      .battery-icon {
+        display: flex;
+        align-items: center;
+      }
+
+      .battery-body {
+        width: 22px;
+        height: 11px;
+        border: 1.5px solid var(--color-text-primary);
+        border-radius: 3px;
+        padding: 1.5px;
+        position: relative;
+      }
+
+      .battery-body::after {
+        content: "";
+        position: absolute;
+        right: -4px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2px;
+        height: 5px;
+        background: var(--color-text-primary);
+        border-radius: 0 1px 1px 0;
+      }
+
+      .battery-level {
+        width: 100%;
+        height: 100%;
+        background: #4caf50;
+        border-radius: 1px;
+      }
+
+      /* =========================================
+           APP CONTENT AREA
+           ========================================= */
+      .app-content {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;
+        background: var(--color-surface);
+        scrollbar-width: none;
+      }
+
+      .app-content::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* =========================================
+           NAV BAR
+           ========================================= */
+      .nav-bar {
+        height: 44px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        padding-bottom: 8px;
+        background: var(--color-surface);
+        flex-shrink: 0;
+        z-index: 1001;
+      }
+
+      .nav-pill {
+        width: 134px;
+        height: 5px;
+        background: var(--color-text-primary);
+        border-radius: 10px;
+        opacity: 0.3;
+        border: none;
+        cursor: default;
+      }
+
+      /* === Glassmorphism App Bottom Nav === */
+      .app-nav {
+        height: 60px;
+        background: linear-gradient(
+          170deg,
+          rgba(25, 35, 33, 0.5) 0%,
+          rgba(9, 20, 19, 0.85) 100%
+        );
+        backdrop-filter: blur(25px) saturate(160%);
+        -webkit-backdrop-filter: blur(25px) saturate(160%);
+        border-top: 1px solid rgba(176, 228, 204, 0.12);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 8px;
+        flex-shrink: 0;
+        z-index: 1002;
+        box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.4);
+        position: relative;
+      }
+
+      .app-nav__item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.45);
+        gap: 6px;
+        transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+        padding: 10px 14px;
+        border-radius: 16px;
+        min-width: 65px;
+      }
+
+      /* Active indicator glow line at bottom */
+      .app-nav__item::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%) scaleX(0);
+        width: 32px;
+        height: 3px;
+        background: var(--eco-light);
+        border-radius: 4px;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 
+          0 0 10px var(--eco-mid),
+          0 0 20px rgba(64, 138, 113, 0.4);
+      }
+
+      .app-nav__item i {
+        font-size: 20px;
+        transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+      }
+
+      .app-nav__item span {
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+      }
+
+      .app-nav__item--active {
+        color: var(--eco-light);
+      }
+
+      .app-nav__item--active::before {
+        transform: translateX(-50%) scaleX(1);
+        opacity: 1;
+      }
+
+      .app-nav__item--active i {
+        transform: translateY(-4px);
+        color: #fff;
+        filter: drop-shadow(0 0 8px rgba(64, 138, 113, 0.8));
+      }
+
+      .app-nav__item--active span {
+        opacity: 1;
+        color: var(--eco-light);
+        transform: translateY(-2px);
+      }
+
+      .app-nav__item:active {
+        transform: scale(0.9);
+      }
+
+      /* =========================================
+           🌿 ECOPOWER SPLASH SCREEN
+           ========================================= */
+      .eco-splash {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        overflow: hidden;
+        transition:
+          opacity 0.6s ease,
+          visibility 0.6s ease;
+      }
+
+      .eco-splash--hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      /* Gradient background */
+      .eco-splash__bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          160deg,
+          var(--eco-dark) 0%,
+          var(--eco-mid-dark) 35%,
+          var(--eco-mid) 65%,
+          var(--eco-light) 100%
+        );
+        background-size: 400% 400%;
+        animation: ecoGradient 30s ease-in-out infinite;
+        z-index: -1;
+      }
+
+      @keyframes ecoGradient {
+        0% {
+          background-position: 0% 0%;
+        }
+
+        50% {
+          background-position: 100% 100%;
+        }
+
+        100% {
+          background-position: 0% 0%;
+        }
+      }
+
+      /* Content container */
+      .eco-splash__content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+        padding: 20px;
+        text-align: center;
+      }
+
+      /* ===== LOGO ===== */
+      .eco-splash__logo-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 28px;
+        position: relative;
+      }
+
+      .eco-splash__logo {
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: scale(0);
+        opacity: 0;
+        position: relative;
+      }
+
+      .eco-splash__logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 22px;
+      }
+
+      /* Glow ring behind logo */
+      .eco-splash__glow-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(176, 228, 204, 0.3) 0%,
+          transparent 90%
+        );
+        opacity: 0;
+        pointer-events: none;
+        filter: blur(5px);
+      }
+
+      /* Phase: Logo grows */
+      .eco-splash__logo--grow {
+        animation: splashLogoGrow 0.9s cubic-bezier(0.34, 1.56, 0.64, 1)
+          forwards;
+      }
+
+      @keyframes splashLogoGrow {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+
+        50% {
+          opacity: 1;
+        }
+
+        65% {
+          transform: scale(1.1);
+        }
+
+        82% {
+          transform: scale(0.96);
+        }
+
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* Phase: Glow appears */
+      .eco-splash__glow-ring--visible {
+        animation: glowRingIn 0.8s ease-out forwards;
+      }
+
+      @keyframes glowRingIn {
+        0% {
+          transform: translate(-50%, -50%) scale(0.5);
+          opacity: 0;
+        }
+
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* Phase: Logo breathing idle */
+      .eco-splash__logo--breathing {
+        animation: logoBreathing 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+
+      @keyframes logoBreathing {
+        0%, 100% {
+          transform: scale(1);
+          filter: drop-shadow(0 0 10px rgba(176, 228, 204, 0.2));
+        }
+        50% {
+          transform: scale(1.015);
+          filter: drop-shadow(0 0 25px rgba(176, 228, 204, 0.4));
+        }
+      }
+
+      /* ===== BRAND NAME ===== */
+      .eco-splash__brand {
+        overflow: hidden;
+        opacity: 0;
+        height: 0;
+        transition:
+          height 0.01s,
+          opacity 0.01s;
+      }
+
+      .eco-splash__brand--visible {
+        opacity: 1;
+        height: auto;
+      }
+
+      .eco-splash__brand-name {
+        display: flex;
+        justify-content: center;
+        gap: 2px;
+      }
+
+      .eco-splash__brand-name .letter {
+        display: inline-block;
+        font-family: "Poppins", sans-serif;
+        font-size: 38px;
+        font-weight: 800;
+        color: #fff;
+        transform: translateY(120%);
+        opacity: 0;
+        line-height: 1.2;
+        text-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      .eco-splash__brand-name .letter--visible {
+        animation: letterBounceUp 0.55s cubic-bezier(0.34, 1.56, 0.64, 1)
+          forwards;
+      }
+
+      @keyframes letterBounceUp {
+        0% {
+          transform: translateY(120%);
+          opacity: 0;
+        }
+
+        45% {
+          transform: translateY(-8%);
+          opacity: 1;
+        }
+
+        70% {
+          transform: translateY(4%);
+        }
+
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* ===== TAGLINE ===== */
+      .eco-splash__tagline {
+        font-family: "Poppins", sans-serif;
+        font-size: 12px;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.7);
+        letter-spacing: 1.5px;
+        margin-top: 10px;
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      .eco-splash__tagline--visible {
+        animation: taglineFadeIn 0.6s ease-out forwards;
+      }
+
+      @keyframes taglineFadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+
+        100% {
+          opacity: 0.7;
+          transform: translateY(0);
+        }
+      }
+
+      /* ===== PROGRESS BAR ===== */
+      .eco-splash__progress {
+        position: absolute;
+        bottom: 70px;
+        width: 154px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 2px;
+        padding: 2px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .eco-splash__progress--visible {
+        opacity: 1;
+      }
+
+      .eco-splash__progress-bar {
+        height: 100%;
+        width: 0%;
+        background: repeating-linear-gradient(
+          to right,
+          var(--eco-mid) 0px,
+          var(--eco-mid) 10px,
+          transparent 10px,
+          transparent 13px
+        );
+        background-size: 154px 100%;
+        border-radius: 1px;
+        box-shadow: 0 0 10px rgba(64, 138, 113, 0.3);
+      }
+
+      .eco-splash__progress-bar--filling {
+        animation: progressFill 1.8s ease-in-out forwards;
+      }
+
+      @keyframes progressFill {
+        0% {
+          width: 0%;
+        }
+
+        20% {
+          width: 15%;
+        }
+
+        50% {
+          width: 55%;
+        }
+
+        80% {
+          width: 85%;
+        }
+
+        100% {
+          width: 100%;
+        }
+      }
+
+      /* =========================================
+           MAIN APP (after splash)
+           ========================================= */
+      .main-app {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        background: var(--color-surface);
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(6px);
+        transition:
+          opacity 0.5s ease,
+          transform 0.5s ease;
+        z-index: 100;
+      }
+
+      .main-app--visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ===== In Progress Screen ===== */
+      .in-progress {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 30px;
+        text-align: center;
+      }
+
+      .in-progress__icon-wrap {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          rgba(64, 138, 113, 0.15),
+          rgba(176, 228, 204, 0.08)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        position: relative;
+      }
+
+      .in-progress__icon-wrap::before {
+        content: "";
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        border-top-color: var(--eco-mid);
+        border-right-color: var(--eco-light);
+        animation: spinRing 2s linear infinite;
+      }
+
+      @keyframes spinRing {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .in-progress__icon {
+        font-size: 36px;
+        color: var(--eco-light);
+      }
+
+      .in-progress__title {
+        font-family: "Poppins", sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 8px;
+      }
+
+      .in-progress__subtitle {
+        font-size: 14px;
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        max-width: 260px;
+        margin-bottom: 32px;
+      }
+
+      .in-progress__dots {
+        display: flex;
+        gap: 8px;
+      }
+
+      .in-progress__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--eco-mid);
+        opacity: 0.3;
+        animation: dotPulse 1.4s ease-in-out infinite;
+      }
+
+      .in-progress__dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .in-progress__dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes dotPulse {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scale(1);
+        }
+
+        50% {
+          opacity: 1;
+          transform: scale(1.3);
+        }
+      }
+
+      /* App header bar */
+      .app-header {
+        padding: 16px 20px;
+        background: linear-gradient(
+          180deg,
+          rgba(25, 35, 33, 0.7) 0%,
+          rgba(9, 20, 19, 0.4) 100%
+        );
+        backdrop-filter: blur(20px) saturate(140%);
+        -webkit-backdrop-filter: blur(20px) saturate(140%);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(176, 228, 204, 0.1);
+        flex-shrink: 0;
+        z-index: 1002;
+      }
+
+      .app-header__left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .app-header__right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .app-header__profile {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(176, 228, 204, 0.1);
+        border: 1px solid rgba(176, 228, 204, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--eco-light);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .app-header__profile:active {
+        transform: scale(0.9);
+        background: rgba(176, 228, 204, 0.2);
+      }
+
+      .app-header__icon-btn {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        transition: color 0.3s ease;
+      }
+
+      .app-header__icon-btn:hover {
+        color: #fff;
+      }
+
+      /* =========================================
+           RESPONSIVE
+           ========================================= */
+      @media (max-width: 480px) {
+        body {
+          background: var(--color-screen);
+          align-items: flex-start;
+        }
+
+        .desktop-label {
+          display: none;
+        }
+
+        .phone-frame {
+          width: 100%;
+          height: 100vh;
+          height: 100dvh;
+          border-radius: 0;
+          padding: 0;
+          box-shadow: none;
+          background: var(--color-screen);
+        }
+
+        .phone-frame::before,
+        .phone-frame::after {
+          display: none;
+        }
+
+        .phone-screen {
+          border-radius: 0;
+        }
+
+        .punch-hole {
+          display: none;
+        }
+
+        .status-bar {
+          height: 36px;
+          padding: 0 16px;
+        }
+
+        .nav-bar {
+          height: 34px;
+          padding-bottom: 6px;
+        }
+
+        .nav-pill {
+          width: 100px;
+          height: 4px;
+        }
+
+        .eco-splash__logo {
+          width: 80px;
+          height: 80px;
+        }
+
+        .eco-splash__brand-name .letter {
+          font-size: 30px;
+        }
+      }
+
+      @media (min-width: 481px) and (max-width: 768px) {
+        .phone-frame {
+          transform: scale(0.85);
+          transform-origin: top center;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="desktop-label" aria-hidden="true">Android Prototype Viewer</div>
+
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <!-- Punch-hole camera -->
+        <div class="punch-hole" aria-hidden="true"></div>
+
+        <!-- Status bar -->
+        <header class="status-bar">
+          <time class="status-time" id="statusTime" datetime="12:00"
+            >12:00</time
+          >
+          <div class="status-icons">
+            <div class="signal-bars">
+              <span class="bar" style="height: 3px"></span>
+              <span class="bar" style="height: 5px"></span>
+              <span class="bar" style="height: 8px"></span>
+              <span class="bar" style="height: 11px"></span>
+            </div>
+            <span class="material-icons" style="font-size: 16px">wifi</span>
+            <div class="battery-icon">
+              <div class="battery-body">
+                <div class="battery-level"></div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Main content area -->
+        <main class="app-content" id="appContent">
+          <!-- ========== SPLASH SCREEN ========== -->
+          <div id="ecoSplash" class="eco-splash">
+            <div class="eco-splash__bg"></div>
+
+            <div class="eco-splash__content">
+              <!-- Logo -->
+              <div class="eco-splash__logo-wrapper">
+                <div class="eco-splash__glow-ring" id="splashGlow"></div>
+                <div class="eco-splash__logo" id="splashLogo">
+                  <!--
+                                    ============================
+                                    🔁 REPLACE src WITH YOUR LOGO
+                                    ============================
+                                -->
+                  <img
+                    src="EcoPower_logo.png"
+                    alt="EcoPower"
+                    onerror="
+                      this.src =
+                        'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22rgba(255,255,255,0.12)%22 stroke=%22rgba(255,255,255,0.2)%22 stroke-width=%221.5%22/><text x=%2250%22 y=%2256%22 text-anchor=%22middle%22 fill=%22rgba(255,255,255,0.5)%22 font-size=%2212%22 font-family=%22Poppins,sans-serif%22 font-weight=%22600%22>LOGO</text></svg>'
+                    "
+                  />
+                </div>
+              </div>
+
+              <!-- Brand name -->
+              <div class="eco-splash__brand" id="splashBrand">
+                <div class="eco-splash__brand-name" id="splashBrandName"></div>
+              </div>
+
+              <!-- Tagline -->
+              <p class="eco-splash__tagline" id="splashTagline">
+                Powering a greener tomorrow
+              </p>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="eco-splash__progress" id="splashProgress">
+              <div
+                class="eco-splash__progress-bar"
+                id="splashProgressBar"
+              ></div>
+            </div>
+          </div>
+
+          <!-- ========== MAIN APP (shown after splash) ========== -->
+          <div id="mainApp" class="main-app" hidden>
+            <!-- App header -->
+            <div class="app-header">
+              <div class="app-header__left">
+                <img
+                  class="app-header__logo"
+                  style="width: 26px; height: 26px;"
+                  src="EcoPower_logo.png"
+                  alt=""
+                  onerror="
+                    this.src =
+                      'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22rgba(64,138,113,0.2)%22/><text x=%2250%22 y=%2258%22 text-anchor=%22middle%22 fill=%22%23408A71%22 font-size=%2216%22 font-family=%22Poppins%22 font-weight=%22800%22>E</text></svg>'
+                  "
+                />
+                <h1 class="app-header__title" style="font-family: 'Poppins', sans-serif; font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 0;">EcoPower</h1>
+              </div>
+              
+              <div class="app-header__right">
+                <button class="app-header__icon-btn">
+                  <i class="bi bi-search"></i>
+                </button>
+                <div class="app-header__profile">
+                  <i class="bi bi-person-fill"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- In Progress content -->
+            <div class="in-progress">
+              <div class="in-progress__icon-wrap">
+                <span class="material-icons in-progress__icon">eco</span>
+              </div>
+              <h2 class="in-progress__title">In Progress</h2>
+              <p class="in-progress__subtitle">
+                We're building something amazing.<br />
+                This app is currently under development.
+              </p>
+              <div class="in-progress__dots">
+                <div class="in-progress__dot"></div>
+                <div class="in-progress__dot"></div>
+                <div class="in-progress__dot"></div>
+              </div>
+            </div>
+
+            <!-- App Bottom Navigation -->
+            <nav class="app-nav">
+              <a href="#" class="app-nav__item app-nav__item--active">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+              </a>
+              <a href="#" class="app-nav__item">
+                <i class="bi bi-graph-up"></i>
+                <span>Analytics</span>
+              </a>
+              <a href="#" class="app-nav__item">
+                <i class="bi bi-cpu-fill"></i>
+                <span>Control</span>
+              </a>
+              <a href="#" class="app-nav__item">
+                <i class="bi bi-bell-fill"></i>
+                <span>Alerts</span>
+              </a>
+              <a href="#" class="app-nav__item">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Reports</span>
+              </a>
+            </nav>
+          </div>
+        </main>
+
+        <!-- Navigation bar -->
+        <nav class="nav-bar">
+          <button class="nav-pill" type="button" aria-label="Home"></button>
+        </nav>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        // ===== Clock =====
+        const Clock = {
+          el: null,
+          tid: null,
+          init() {
+            this.el = document.getElementById("statusTime");
+            if (!this.el) return;
+            this.tick();
+            this.tid = setInterval(() => this.tick(), 30000);
+          },
+          tick() {
+            if (!this.el) return;
+            const d = new Date();
+            const h = d.getHours().toString().padStart(2, "0");
+            const m = d.getMinutes().toString().padStart(2, "0");
+            this.el.textContent = `${h}:${m}`;
+          },
+        };
+
+        // ===== Splash Animation =====
+        const Splash = {
+          brand: "EcoPower",
+          timers: [],
+
+          els: {},
+
+          init() {
+            this.els = {
+              splash: document.getElementById("ecoSplash"),
+              logo: document.getElementById("splashLogo"),
+              glow: document.getElementById("splashGlow"),
+              brandWrap: document.getElementById("splashBrand"),
+              brandName: document.getElementById("splashBrandName"),
+              tagline: document.getElementById("splashTagline"),
+              progress: document.getElementById("splashProgress"),
+              progressBar: document.getElementById("splashProgressBar"),
+              app: document.getElementById("mainApp"),
+            };
+
+            if (!this.els.splash) return;
+
+            this.buildLetters();
+            this.run();
+          },
+
+          buildLetters() {
+            const c = this.els.brandName;
+            if (!c) return;
+            c.innerHTML = "";
+            this.brand.split("").forEach((ch) => {
+              const s = document.createElement("span");
+              s.className = "letter";
+              s.textContent = ch;
+              c.appendChild(s);
+            });
+          },
+
+          delay(fn, ms) {
+            this.timers.push(setTimeout(fn, ms));
+          },
+
+          run() {
+            const {
+              logo,
+              glow,
+              brandWrap,
+              brandName,
+              tagline,
+              progress,
+              progressBar,
+            } = this.els;
+            const letters = brandName
+              ? brandName.querySelectorAll(".letter")
+              : [];
+
+            // === Phase 1: Logo grows in center (0.4s) ===
+            this.delay(() => {
+              logo.classList.add("eco-splash__logo--grow");
+            }, 400);
+
+            // === Phase 1b: Glow ring appears (1s) ===
+            this.delay(() => {
+              glow.classList.add("eco-splash__glow-ring--visible");
+            }, 1000);
+
+            // === Phase 2: Brand name appears (1.6s) ===
+            this.delay(() => {
+              // Show the brand wrapper
+              brandWrap.classList.add("eco-splash__brand--visible");
+
+              // Animate each letter with stagger
+              letters.forEach((letter, i) => {
+                this.delay(() => {
+                  letter.classList.add("letter--visible");
+                }, i * 75);
+              });
+            }, 1600);
+
+            // === Phase 3: Tagline appears (2.4s) ===
+            this.delay(() => {
+              tagline.classList.add("eco-splash__tagline--visible");
+            }, 2400);
+
+            // === Phase 4: Progress bar (2.6s) ===
+            this.delay(() => {
+              progress.classList.add("eco-splash__progress--visible");
+              progressBar.classList.add("eco-splash__progress-bar--filling");
+            }, 2600);
+
+            // === Phase 5: Logo starts breathing (2.8s) ===
+            this.delay(() => {
+              logo.classList.remove("eco-splash__logo--grow");
+              logo.style.transform = "scale(1)";
+              logo.style.opacity = "1";
+              logo.classList.add("eco-splash__logo--breathing");
+            }, 2800);
+
+            // === Phase 6: Hide splash → show app (4.6s) ===
+            this.delay(() => {
+              this.hideSplash();
+            }, 4600);
+          },
+
+          hideSplash() {
+            const { splash, app } = this.els;
+
+            // Fade out splash
+            splash.classList.add("eco-splash--hidden");
+
+            // Show main app
+            if (app) {
+              app.hidden = false;
+              // Force reflow
+              void app.offsetWidth;
+              app.classList.add("main-app--visible");
+            }
+
+            console.log("✅ EcoPower splash complete");
+          },
+
+          destroy() {
+            this.timers.forEach((id) => clearTimeout(id));
+            this.timers = [];
+          },
+        };
+
+        // ===== Navigation Interactivity =====
+        const Navigation = {
+          init() {
+            const nav = document.querySelector(".app-nav");
+            if (!nav) return;
+
+            const items = nav.querySelectorAll(".app-nav__item");
+            items.forEach((item) => {
+              item.addEventListener("click", (e) => {
+                e.preventDefault();
+                items.forEach((i) => i.classList.remove("app-nav__item--active"));
+                item.classList.add("app-nav__item--active");
+
+                // Optional: Trigger a subtle vibration if supported
+                if (window.navigator && window.navigator.vibrate) {
+                  window.navigator.vibrate(5);
+                }
+              });
+            });
+          },
+        };
+
+        // ===== Init =====
+        function boot() {
+          Clock.init();
+          Splash.init();
+          Navigation.init();
+        }
+
+        if (document.readyState !== "loading") boot();
+        else document.addEventListener("DOMContentLoaded", boot);
+
+        window.addEventListener("beforeunload", () => {
+          if (Clock.tid) clearInterval(Clock.tid);
+          Splash.destroy();
+        });
+      })();
+    </script>
+  </body>
+</html>
