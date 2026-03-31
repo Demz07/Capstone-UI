@@ -84,8 +84,8 @@
             // === Phase 1b: Glow ring appears (1s) ===
             this.delay(() => {
               glow.classList.add("eco-splash__glow-ring--visible");
-              const bg = document.querySelector(".eco-splash .eco-shader-bg");
-              if (bg) bg.classList.add("eco-shader-bg--visible");
+              const bg = document.querySelector(".eco-splash .eco-splash__bg");
+              if (bg) bg.classList.add("eco-splash__bg--visible");
             }, 1000);
 
             // === Phase 2: Brand name appears (1.6s) ===
