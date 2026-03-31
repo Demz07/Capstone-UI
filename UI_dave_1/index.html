@@ -161,7 +161,7 @@
                 </div>
                 <div class="auth-input-group">
                   <i class="bi bi-envelope"></i>
-                  <input type="email" placeholder="Email Address" />
+                  <input type="email" id="signupEmail" placeholder="Email Address" />
                 </div>
                 <div class="auth-input-group">
                   <i class="bi bi-lock"></i>
@@ -189,7 +189,7 @@
             <div class="auth-card" id="authOtpCard" hidden>
               <div class="auth-card__header">
                 <h2 class="auth-card__title">Verify Account</h2>
-                <p class="auth-card__subtitle">We've sent a 4-digit code to your Google email</p>
+                <p class="auth-card__subtitle">We've sent a 4-digit code to <strong id="verifyEmailDisplay" style="color: var(--color-text-primary);">your email</strong></p>
               </div>
               
               <form class="auth-form" onsubmit="event.preventDefault(); AuthScreen.login();">
@@ -231,8 +231,16 @@
                 <button class="app-header__icon-btn" id="themeToggle" aria-label="Toggle Theme">
                   <i class="bi bi-moon-fill" id="themeIcon"></i>
                 </button>
-                <div class="app-header__profile">
-                  <i class="bi bi-person-fill"></i>
+                <div class="app-header__profile-wrap" style="position: relative;">
+                  <div class="app-header__profile" id="profileBtn">
+                    <i class="bi bi-person-fill"></i>
+                  </div>
+                  <!-- Profile Dropdown -->
+                  <div class="profile-dropdown" id="profileDropdown" hidden>
+                    <button class="profile-dropdown__btn" onclick="AuthScreen.showLogoutModal(event)">
+                      <i class="bi bi-box-arrow-right"></i> Log Out
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -277,6 +285,19 @@
                 <span>Reports</span>
               </a>
             </nav>
+
+            <!-- ========== LOGOUT CONFIRMATION MODAL ========== -->
+            <div id="logoutModal" class="app-modal" hidden>
+              <div class="app-modal__overlay" onclick="AuthScreen.hideLogoutModal()"></div>
+              <div class="app-modal__content">
+                <h3 class="app-modal__title">Log Out</h3>
+                <p class="app-modal__desc">Are you sure you want to log out?</p>
+                <div class="app-modal__actions">
+                  <button class="app-modal__btn app-modal__btn--cancel" onclick="AuthScreen.hideLogoutModal()">Cancel</button>
+                  <button class="app-modal__btn app-modal__btn--danger" onclick="AuthScreen.executeLogout()">Log Out</button>
+                </div>
+              </div>
+            </div>
           </div>
         </main>
 

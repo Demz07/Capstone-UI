@@ -176,6 +176,65 @@
               }, 600);
             }
           },
+          
+          showLogoutModal(e) {
+            if (e) e.stopPropagation();
+            const dropdown = document.getElementById("profileDropdown");
+            if (dropdown) dropdown.hidden = true;
+            
+            const modal = document.getElementById("logoutModal");
+            if (modal) {
+              modal.hidden = false;
+              void modal.offsetWidth;
+              modal.classList.add("app-modal--visible");
+            }
+          },
+
+          hideLogoutModal() {
+            const modal = document.getElementById("logoutModal");
+            if (modal) {
+              modal.classList.remove("app-modal--visible");
+              setTimeout(() => {
+                modal.hidden = true;
+              }, 300);
+            }
+          },
+
+          executeLogout() {
+            this.hideLogoutModal();
+            setTimeout(() => {
+              this.logout();
+            }, 300); // Wait for modal to hide
+          },
+
+          logout() {
+            const authApp = document.getElementById("authApp");
+            const mainApp = document.getElementById("mainApp");
+            const dropdown = document.getElementById("profileDropdown");
+            
+            if (dropdown) dropdown.hidden = true;
+            
+            if (authApp && mainApp) {
+              mainApp.classList.remove("main-app--visible");
+              
+              if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(10);
+              }
+              
+              setTimeout(() => {
+                mainApp.hidden = true;
+                
+                authApp.hidden = false;
+                void authApp.offsetWidth;
+                authApp.classList.add("auth-app--visible");
+                
+                // Switch back to login tab
+                this.switchTab("login");
+                
+                console.log("✅ Logged out successfully");
+              }, 600);
+            }
+          },
 
           switchTab(tab) {
             const loginCard = document.getElementById("authLoginCard");
@@ -214,6 +273,14 @@
             const loginCard = document.getElementById("authLoginCard");
             const signupCard = document.getElementById("authSignupCard");
             const otpCard = document.getElementById("authOtpCard");
+            
+            const emailInput = document.getElementById("signupEmail");
+            const emailDisplay = document.getElementById("verifyEmailDisplay");
+            
+            if (emailInput && emailDisplay) {
+              const emailVal = emailInput.value.trim();
+              emailDisplay.textContent = emailVal ? emailVal : "your email";
+            }
             
             if (otpCard) {
               if (loginCard) loginCard.hidden = true;
@@ -318,6 +385,28 @@
           }
         };
 
+        // ===== Profile Dropdown =====
+        const Profile = {
+          init() {
+            const btn = document.getElementById("profileBtn");
+            const dropdown = document.getElementById("profileDropdown");
+            if (!btn || !dropdown) return;
+
+            btn.addEventListener("click", (e) => {
+              // Toggle dropdown
+              const isHidden = dropdown.hidden;
+              dropdown.hidden = !isHidden;
+              e.stopPropagation();
+            });
+
+            document.addEventListener("click", (e) => {
+              if (!btn.contains(e.target)) {
+                dropdown.hidden = true;
+              }
+            });
+          }
+        };
+
         // ===== Init =====
         function boot() {
           Clock.init();
@@ -325,6 +414,7 @@
           Navigation.init();
           ThemeToggle.init();
           AuthScreen.initOtp();
+          Profile.init();
         }
 
         if (document.readyState !== "loading") boot();
