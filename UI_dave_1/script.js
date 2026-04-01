@@ -280,17 +280,26 @@
     setBatteryStatus(id, trend) {
       const el = document.getElementById(id);
       if (!el) return;
+      
+      const isInternal = id.includes("internal");
+      const fillId = isInternal ? "battery-internal-fill" : "battery-secondary-fill";
+      const fillEl = document.getElementById(fillId);
+      
       el.classList.remove("battery-status--active", "battery-status--charging", "battery-status--low");
+      if (fillEl) fillEl.classList.remove("battery-fill--charging", "battery-fill--draining");
+
       const icon = el.querySelector("i");
       const text = el.querySelector("span");
       switch (trend) {
         case "charging":
           el.classList.add("battery-status--charging");
+          if (fillEl) fillEl.classList.add("battery-fill--charging");
           if (icon) icon.className = "bi bi-lightning-fill";
           if (text) text.textContent = "CHARGING";
           break;
         case "draining":
           el.classList.add("battery-status--low");
+          if (fillEl) fillEl.classList.add("battery-fill--draining");
           if (icon) icon.className = "bi bi-arrow-down-short";
           if (text) text.textContent = "DRAINING";
           break;

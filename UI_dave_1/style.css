@@ -1531,6 +1531,43 @@ body {
   border-radius: 2px;
   transition: width 0.8s ease-out;
   min-width: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Bubbling Animation */
+.battery-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.45) 1.2px, transparent 1.2px);
+  background-size: 14px 14px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.battery-fill--charging::after {
+  opacity: 1;
+  animation: batteryBubbleRight 1.5s linear infinite;
+}
+
+.battery-fill--draining::after {
+  opacity: 0.8;
+  animation: batteryBubbleLeft 2.5s linear infinite;
+}
+
+@keyframes batteryBubbleRight {
+  from { background-position: 0 0; }
+  to { background-position: 28px 0; }
+}
+
+@keyframes batteryBubbleLeft {
+  from { background-position: 0 0; }
+  to { background-position: -28px 0; }
 }
 
 .battery-fill--green {
@@ -4727,6 +4764,51 @@ body {
 /* -- Auth Screen -- */
 .light-mode .auth-app {
   background: var(--color-surface);
+}
+
+/* -- Phase Indicator Visibility Fixes -- */
+.light-mode .phase-label {
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+.light-mode .phase-circle {
+  color: var(--color-text-secondary);
+}
+
+.light-mode .phase-item.active .phase-circle {
+  color: #fff;
+}
+
+.light-mode .phase-item.completed .phase-circle {
+  color: #fff;
+}
+
+.light-mode .phase-item.active .phase-label,
+.light-mode .phase-item.completed .phase-label {
+  color: var(--color-text-primary);
+  font-weight: 800;
+}
+
+/* -- Generic UI Visibility Tweaks -- */
+.light-mode .tiny-label {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.light-mode .section-arrow {
+  opacity: 0.6;
+}
+
+.light-mode .stat-label {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.light-mode .battery-status {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.light-mode .phone-frame::after {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0% , rgba(0, 0, 0, 0) 100%);
 }
 
 /* =========================================
