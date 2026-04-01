@@ -48,6 +48,13 @@
   --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.25);
   --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.35);
 
+  --shadow-neumorph: 
+    10px 10px 20px rgba(0, 0, 0, 0.35),
+    -10px -10px 20px rgba(255, 255, 255, 0.03);
+  --shadow-neumorph-inset:
+    inset 6px 6px 12px rgba(0, 0, 0, 0.3),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.02);
+
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   --transition-smooth: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -57,13 +64,40 @@
 .light-mode {
   --color-screen: #ffffff;
   --color-surface: #f4f7f6;
-  --color-surface-2: rgba(0, 0, 0, 0.02);
-  --color-surface-3: rgba(0, 0, 0, 0.04);
+  --color-surface-2: rgba(0, 0, 0, 0.035);
+  --color-surface-3: rgba(0, 0, 0, 0.06);
   --color-text-primary: #091413;
-  --color-text-secondary: rgba(9, 20, 19, 0.6);
-  --color-text-dim: rgba(9, 20, 19, 0.15);
+  --color-text-secondary: rgba(9, 20, 19, 0.75);
+  --color-text-dim: rgba(9, 20, 19, 0.25);
   --color-border-card: rgba(0, 0, 0, 0.06);
+  --color-border-subtle: #bbb;
   --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-neumorph: 
+    8px 8px 16px rgba(166, 166, 166, 0.5),
+    -8px -8px 16px rgba(255, 255, 255, 1);
+  --shadow-neumorph-inset:
+    inset 4px 4px 8px rgba(166, 166, 166, 0.35),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+}
+
+body {
+  font-family: "Nunito", "Segoe UI", system-ui, sans-serif;
+  font-weight: 600;
+  background: var(--color-bg-outer);
+  color: var(--color-text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.light-mode body {
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
 }
 
 /* =========================================
@@ -87,7 +121,8 @@
 }
 
 body {
-  font-family: "Roboto", system-ui, sans-serif;
+  font-family: "Nunito", "Segoe UI", system-ui, sans-serif;
+  font-weight: 600;
   background: var(--color-bg-outer);
   color: var(--color-text-primary);
   display: flex;
@@ -98,6 +133,10 @@ body {
   overflow: hidden;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+
+.light-mode body {
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
 /* =========================================
@@ -1094,14 +1133,12 @@ body {
 .auth-card {
   width: 85%;
   max-width: 320px;
-  background: rgba(25, 35, 33, 0.4);
-  backdrop-filter: blur(25px) saturate(160%);
-  -webkit-backdrop-filter: blur(25px) saturate(160%);
-  border: 1px solid rgba(176, 228, 204, 0.1);
+  background: var(--color-surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.03);
   border-radius: 24px;
   padding: 32px 24px;
   z-index: 2;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-neumorph);
 }
 
 .auth-card__header {
@@ -1357,11 +1394,11 @@ body {
   background: var(--color-surface-2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--color-border-card);
+  border: 1px solid rgba(255, 255, 255, 0.03);
   border-radius: var(--card-radius);
   padding: var(--card-padding);
   margin-bottom: 16px;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-neumorph);
   transition: box-shadow var(--transition-normal);
 }
 
@@ -1493,13 +1530,15 @@ body {
   gap: 8px;
   padding: 12px;
   border-radius: 14px;
-  border: 1px solid var(--color-border-card);
+  border: 1px solid rgba(255, 255, 255, 0.03);
   background: var(--color-surface-2);
+  box-shadow: var(--shadow-neumorph);
   transition: all var(--transition-normal);
 }
 
 .battery-item:hover {
-  border-color: rgba(176, 228, 204, 0.15);
+  box-shadow: var(--shadow-neumorph-inset);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
 .tiny-label {
@@ -1533,41 +1572,92 @@ body {
   min-width: 2px;
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
-/* Bubbling Animation */
+/* Bubbling Animation - Simple Bubbles Moving Right */
+.battery-fill::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  pointer-events: none;
+  z-index: 10;
+  background-image: 
+    radial-gradient(circle at 10% 30%, rgba(255,255,255,0.9) 2px, transparent 2px),
+    radial-gradient(circle at 30% 60%, rgba(255,255,255,0.7) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 50% 20%, rgba(255,255,255,0.8) 2.5px, transparent 2.5px),
+    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.6) 1px, transparent 1px),
+    radial-gradient(circle at 90% 40%, rgba(255,255,255,0.7) 1.8px, transparent 1.8px);
+  background-size: 20px 20px;
+  background-position: 0 0, 8px 12px, 15px 5px, 25px 15px, 35px 8px;
+  animation: bubbleFloatRight 1.5s linear infinite;
+  opacity: 0;
+}
+
 .battery-fill::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.45) 1.2px, transparent 1.2px);
-  background-size: 14px 14px;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
   pointer-events: none;
+  z-index: 10;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(255,255,255,0.7) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 35% 20%, rgba(255,255,255,0.8) 2px, transparent 2px),
+    radial-gradient(circle at 55% 70%, rgba(255,255,255,0.5) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 75% 30%, rgba(255,255,255,0.6) 1px, transparent 1px),
+    radial-gradient(circle at 95% 60%, rgba(255,255,255,0.7) 2.2px, transparent 2.2px);
+  background-size: 25px 25px;
+  background-position: 3px 8px, 12px 3px, 22px 18px, 32px 10px, 40px 20px;
+  animation: bubbleFloatRightDelay 1.8s linear infinite;
+  opacity: 0;
 }
 
-.battery-fill--charging::after {
+.battery-fill--green.battery-fill--charging::before,
+.battery-fill--green.battery-fill--draining::before,
+.battery-fill--blue.battery-fill--charging::before,
+.battery-fill--blue.battery-fill--draining::before {
   opacity: 1;
-  animation: batteryBubbleRight 1.5s linear infinite;
+  animation: bubbleFloatRight 1.2s linear infinite !important;
 }
 
-.battery-fill--draining::after {
+.battery-fill--green.battery-fill--charging::after,
+.battery-fill--green.battery-fill--draining::after,
+.battery-fill--blue.battery-fill--charging::after,
+.battery-fill--blue.battery-fill--draining::after {
   opacity: 0.8;
-  animation: batteryBubbleLeft 2.5s linear infinite;
+  animation: bubbleFloatRightDelay 1.5s linear infinite !important;
 }
 
-@keyframes batteryBubbleRight {
-  from { background-position: 0 0; }
-  to { background-position: 28px 0; }
+@keyframes bubbleFloatRight {
+  0% {
+    background-position: 0 0, 8px 12px, 15px 5px, 25px 15px, 35px 8px;
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    background-position: 50px 0, 58px 12px, 65px 5px, 75px 15px, 85px 8px;
+    transform: translateX(30px);
+    opacity: 0;
+  }
 }
 
-@keyframes batteryBubbleLeft {
-  from { background-position: 0 0; }
-  to { background-position: -28px 0; }
+@keyframes bubbleFloatRightDelay {
+  0% {
+    background-position: 3px 8px, 12px 3px, 22px 18px, 32px 10px, 40px 20px;
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    background-position: 53px 8px, 62px 3px, 72px 18px, 82px 10px, 90px 20px;
+    transform: translateX(35px);
+    opacity: 0;
+  }
 }
 
 .battery-fill--green {
@@ -1686,13 +1776,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  border: 1px solid var(--color-border-card);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: var(--shadow-neumorph);
   transition: all var(--transition-normal);
 }
 
 .stat-card:active {
-  border-color: rgba(176, 228, 204, 0.2);
+  box-shadow: var(--shadow-neumorph-inset);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
 .stat-icon {
@@ -1754,10 +1845,13 @@ body {
    3. SESSION STATUS
    ========================================= */
 .session-status-card {
-  background: linear-gradient(135deg,
-      rgba(249, 115, 22, 0.05),
-      rgba(234, 88, 12, 0.04));
-  border: 1px solid rgba(249, 115, 22, 0.15);
+  background: var(--color-surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: var(--shadow-neumorph);
+}
+
+.light-mode .session-status-card {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .session-header {
@@ -4341,14 +4435,32 @@ body {
 }
 
 .light-mode .glass-card {
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(64, 138, 113, 0.08);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-neumorph);
 }
 
 .light-mode .stat-card,
 .light-mode .battery-item {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-neumorph);
+}
+
+.light-mode .stat-card:active,
+.light-mode .battery-item:hover {
+  box-shadow: var(--shadow-neumorph-inset);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.light-mode .auth-card {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-neumorph);
+}
+
+.light-mode .session-status-card {
+  background: rgba(255, 255, 255, 0.6);
   border-color: rgba(0, 0, 0, 0.04);
 }
 
