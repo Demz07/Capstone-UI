@@ -5,15 +5,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#1a1a2e" />
-  <title>EcoPower – Android Prototype</title>
+  <title>EcoPower – IoT Monitoring System</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap"
     rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -46,39 +47,24 @@
 
       <!-- Main content area -->
       <main class="app-content" id="appContent">
+
         <!-- ========== SPLASH SCREEN ========== -->
         <div id="ecoSplash" class="eco-splash">
           <div class="eco-splash__bg"></div>
-
           <div class="eco-splash__content">
-            <!-- Logo -->
             <div class="eco-splash__logo-wrapper">
               <div class="eco-splash__glow-ring" id="splashGlow"></div>
               <div class="eco-splash__logo" id="splashLogo">
-                <!--
-                                    ============================
-                                    🔁 REPLACE src WITH YOUR LOGO
-                                    ============================
-                                -->
                 <img src="EcoPower_logo.png" alt="EcoPower" onerror="
-                      this.src =
-                        'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22rgba(255,255,255,0.12)%22 stroke=%22rgba(255,255,255,0.2)%22 stroke-width=%221.5%22/><text x=%2250%22 y=%2256%22 text-anchor=%22middle%22 fill=%22rgba(255,255,255,0.5)%22 font-size=%2212%22 font-family=%22Poppins,sans-serif%22 font-weight=%22600%22>LOGO</text></svg>'
-                    " />
+                  this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22rgba(255,255,255,0.12)%22 stroke=%22rgba(255,255,255,0.2)%22 stroke-width=%221.5%22/><text x=%2250%22 y=%2256%22 text-anchor=%22middle%22 fill=%22rgba(255,255,255,0.5)%22 font-size=%2212%22 font-family=%22Poppins,sans-serif%22 font-weight=%22600%22>LOGO</text></svg>'
+                " />
               </div>
             </div>
-
-            <!-- Brand name -->
             <div class="eco-splash__brand" id="splashBrand">
               <div class="eco-splash__brand-name" id="splashBrandName"></div>
             </div>
-
-            <!-- Tagline -->
-            <p class="eco-splash__tagline" id="splashTagline">
-              Powering a greener tomorrow
-            </p>
+            <p class="eco-splash__tagline" id="splashTagline">Powering a greener tomorrow</p>
           </div>
-
-          <!-- Progress bar -->
           <div class="eco-splash__progress" id="splashProgress">
             <div class="eco-splash__progress-bar" id="splashProgressBar"></div>
           </div>
@@ -90,7 +76,7 @@
             <img src="EcoPower_logo.png" alt="" class="auth-app__bg-logo" />
           </div>
 
-          <!-- Default Login Card -->
+          <!-- Login Card -->
           <div class="auth-card" id="authLoginCard">
             <div class="auth-card__header">
               <img src="EcoPower_logo.png" alt="EcoPower Logo" class="auth-card__logo-icon auth-logo-glow"
@@ -98,26 +84,23 @@
               <h2 class="auth-card__title">Welcome Back</h2>
               <p class="auth-card__subtitle">Log in to your account</p>
             </div>
-
             <form class="auth-form" onsubmit="event.preventDefault(); AuthScreen.login();">
               <div class="auth-input-group">
                 <i class="bi bi-envelope"></i>
-                <input type="email" placeholder="Email Address" />
+                <input type="email" placeholder="Email Address" autocomplete="email" />
               </div>
               <div class="auth-input-group">
                 <i class="bi bi-lock"></i>
-                <input type="password" id="loginPassword" placeholder="Password" />
+                <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" />
                 <button type="button" class="auth-toggle-pwd" onclick="AuthScreen.togglePassword('loginPassword')">
                   <i class="bi bi-eye"></i>
                 </button>
               </div>
               <div class="auth-actions">
-                <a href="#" class="auth-link">Forgot password?</a>
+                <a href="#" class="auth-link" onclick="event.preventDefault()">Forgot password?</a>
               </div>
-              <button type="button" class="auth-btn" onclick="AuthScreen.login()">Log In</button>
-
+              <button type="submit" class="auth-btn">Log In</button>
               <div class="auth-divider"><span>OR</span></div>
-
               <button type="button" class="auth-btn auth-btn--google" onclick="AuthScreen.login()">
                 <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -136,7 +119,6 @@
                 Log in with Google
               </button>
             </form>
-
             <div class="auth-footer">
               <p>Don't have an account? <a href="#" class="auth-link auth-link--highlight"
                   onclick="event.preventDefault(); AuthScreen.switchTab('signup');">Sign up</a></p>
@@ -151,27 +133,24 @@
               <h2 class="auth-card__title">Create Account</h2>
               <p class="auth-card__subtitle">Join EcoPower today</p>
             </div>
-
             <form class="auth-form" onsubmit="event.preventDefault(); AuthScreen.showOtp();">
               <div class="auth-input-group">
                 <i class="bi bi-person"></i>
-                <input type="text" placeholder="Full Name" />
+                <input type="text" placeholder="Full Name" autocomplete="name" />
               </div>
               <div class="auth-input-group">
                 <i class="bi bi-envelope"></i>
-                <input type="email" id="signupEmail" placeholder="Email Address" />
+                <input type="email" id="signupEmail" placeholder="Email Address" autocomplete="email" />
               </div>
               <div class="auth-input-group">
                 <i class="bi bi-lock"></i>
-                <input type="password" id="signupPassword" placeholder="Create Password" />
+                <input type="password" id="signupPassword" placeholder="Create Password" autocomplete="new-password" />
                 <button type="button" class="auth-toggle-pwd" onclick="AuthScreen.togglePassword('signupPassword')">
                   <i class="bi bi-eye"></i>
                 </button>
               </div>
-              <button type="button" class="auth-btn" onclick="AuthScreen.showOtp()">Sign Up</button>
-
+              <button type="submit" class="auth-btn">Sign Up</button>
               <div class="auth-divider"><span>OR</span></div>
-
               <button type="button" class="auth-btn auth-btn--google" onclick="AuthScreen.showOtp()">
                 <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -190,21 +169,19 @@
                 Sign up with Google
               </button>
             </form>
-
             <div class="auth-footer">
               <p>Already have an account? <a href="#" class="auth-link auth-link--highlight"
                   onclick="event.preventDefault(); AuthScreen.switchTab('login');">Log in</a></p>
             </div>
           </div>
 
-          <!-- OTP Authentication Card -->
+          <!-- OTP Card -->
           <div class="auth-card" id="authOtpCard" hidden>
             <div class="auth-card__header">
               <h2 class="auth-card__title">Verify Account</h2>
               <p class="auth-card__subtitle">We've sent a 4-digit code to <strong id="verifyEmailDisplay"
                   style="color: var(--color-text-primary);">your email</strong></p>
             </div>
-
             <form class="auth-form" onsubmit="event.preventDefault(); AuthScreen.login();">
               <div class="otp-inputs" id="otpContainer">
                 <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
@@ -212,40 +189,45 @@
                 <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
                 <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
               </div>
-
               <button type="submit" class="auth-btn" style="margin-top:24px;">Verify & Log In</button>
             </form>
-
             <div class="auth-footer">
-              <p><a href="#" class="auth-link" onclick="event.preventDefault(); AuthScreen.hideOtp();">Cancel</a></p>
+              <p><a href="#" class="auth-link" onclick="event.preventDefault(); AuthScreen.hideOtp();">← Back</a></p>
             </div>
           </div>
         </div>
 
-        <!-- ========== MAIN APP (shown after splash) ========== -->
+        <!-- ========== MAIN APP ========== -->
         <div id="mainApp" class="main-app" hidden>
-          <!-- App header -->
+          <!-- App Header -->
           <div class="app-header">
             <div class="app-header__left">
-              <img class="app-header__logo" style="width: 26px; height: 26px;" src="EcoPower_logo.png" alt="" onerror="
-                    this.src =
-                      'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22rgba(64,138,113,0.2)%22/><text x=%2250%22 y=%2258%22 text-anchor=%22middle%22 fill=%22%23408A71%22 font-size=%2216%22 font-family=%22Poppins%22 font-weight=%22800%22>E</text></svg>'
-                  " />
-              <h1 class="app-header__title"
-                style="font-family: 'Poppins', sans-serif; font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 0;">
-                EcoPower</h1>
+              <img class="app-header__logo" style="width: 26px; height: 26px;" src="EcoPower_logo.png" alt="EcoPower"
+                onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22rgba(64,138,113,0.2)%22/><text x=%2250%22 y=%2258%22 text-anchor=%22middle%22 fill=%22%23408A71%22 font-size=%2216%22 font-family=%22Poppins%22 font-weight=%22800%22>E</text></svg>'" />
+              <h1 class="app-header__title">EcoPower</h1>
             </div>
-
             <div class="app-header__right">
               <button class="app-header__icon-btn" id="themeToggle" aria-label="Toggle Theme">
                 <i class="bi bi-moon-fill" id="themeIcon"></i>
+              </button>
+              <button class="app-header__icon-btn notification-btn" id="notificationBtn" aria-label="Notifications"
+                onclick="Navigation.switchScreen(4)">
+                <i class="bi bi-bell-fill"></i>
+                <span class="notification-dot" id="notificationDot"></span>
               </button>
               <div class="app-header__profile-wrap" style="position: relative;">
                 <div class="app-header__profile" id="profileBtn">
                   <i class="bi bi-person-fill"></i>
                 </div>
-                <!-- Profile Dropdown -->
                 <div class="profile-dropdown" id="profileDropdown" hidden>
+                  <div class="profile-dropdown__header">
+                    <div class="profile-dropdown__avatar"><i class="bi bi-person-fill"></i></div>
+                    <div class="profile-dropdown__info">
+                      <span class="profile-dropdown__name">EcoPower User</span>
+                      <span class="profile-dropdown__email">user@ecopower.io</span>
+                    </div>
+                  </div>
+                  <div class="profile-dropdown__divider"></div>
                   <button class="profile-dropdown__btn" onclick="AuthScreen.showLogoutModal(event)">
                     <i class="bi bi-box-arrow-right"></i> Log Out
                   </button>
@@ -254,68 +236,962 @@
             </div>
           </div>
 
-            <!-- Decorative background elements for blur demo -->
-            <div class="bg-decoration bg-decoration--1"></div>
-            <div class="bg-decoration bg-decoration--2"></div>
+          <!-- Main Scrollable Content -->
+          <div class="main-app__content" id="mainAppContent">
 
-            <!-- In Progress content -->
-            <div class="in-progress">
-              <div class="in-progress__icon-wrap">
-                <span class="material-icons in-progress__icon">eco</span>
+            <!-- ==================== SCREEN 1: DASHBOARD ==================== -->
+            <div id="screen-dashboard" class="app-screen">
+
+              <!-- 1. BATTERY SYSTEM CARD -->
+              <div class="glass-card battery-card">
+                <div class="card-header">
+                  <div class="card-header__left">
+                    <div class="icon-box icon-box--eco"><i class="bi bi-battery-charging"></i></div>
+                    <span class="card-title">Battery System</span>
+                  </div>
+                  <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+                </div>
+
+                <div class="battery-grid">
+                  <!-- Internal Battery -->
+                  <div class="battery-item tappable" onclick="Dashboard.openBatteryDetail('internal')">
+                    <span class="tiny-label">INTERNAL BATTERY</span>
+                    <div class="battery-visual">
+                      <div class="battery-border">
+                        <div id="battery-internal-fill" class="battery-fill battery-fill--green" style="width: 75%;">
+                        </div>
+                      </div>
+                      <div class="battery-bump"></div>
+                    </div>
+                    <div class="battery-metrics">
+                      <span id="battery-internal-pct" class="battery-percent">75%</span>
+                      <span id="battery-internal-volt" class="badge badge--volt">12.4V</span>
+                    </div>
+                    <div id="battery-internal-status" class="battery-status battery-status--active">
+                      <i class="bi bi-lightning-fill"></i>
+                      <span>CHARGING</span>
+                    </div>
+                  </div>
+
+                  <!-- Secondary Battery -->
+                  <div class="battery-item tappable" onclick="Dashboard.openBatteryDetail('secondary')">
+                    <span class="tiny-label">SECONDARY BATTERY</span>
+                    <div class="battery-visual">
+                      <div class="battery-border">
+                        <div id="battery-secondary-fill" class="battery-fill battery-fill--blue" style="width: 60%;">
+                        </div>
+                      </div>
+                      <div class="battery-bump"></div>
+                    </div>
+                    <div class="battery-metrics">
+                      <span id="battery-secondary-pct" class="battery-percent">60%</span>
+                      <span id="battery-secondary-volt" class="badge badge--volt">12.0V</span>
+                    </div>
+                    <div id="battery-secondary-status" class="battery-status">
+                      <i class="bi bi-lightning-fill"></i>
+                      <span>STANDBY</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h2 class="in-progress__title">Welcome to EcoPower</h2>
-              <p class="in-progress__subtitle">
-                Your sustainable energy journey starts here.<br />
-                Scroll down to see the glass effect.
-              </p>
-              
-              <!-- Dummy content to enable scrolling for blur demo -->
-              <div class="dummy-card"></div>
-              <div class="dummy-card"></div>
-              <div class="dummy-card"></div>
-              <div class="dummy-card"></div>
-              <div class="dummy-card"></div>
 
-              <div class="in-progress__dots">
-                <div class="in-progress__dot"></div>
-                <div class="in-progress__dot"></div>
-                <div class="in-progress__dot"></div>
+              <!-- 2. STATISTICS SECTION -->
+              <section class="dashboard-section">
+                <h3 class="section-title"><span class="section-arrow">▶</span> Statistics</h3>
+                <div class="stats-grid">
+                  <div class="stat-card tappable" onclick="Dashboard.openStatDetail('sessions')">
+                    <div class="stat-icon stat-icon--indigo"><i class="bi bi-droplet-fill"></i></div>
+                    <span id="stat-sessions" class="stat-value font-mono">12</span>
+                    <span class="stat-label">Sessions</span>
+                  </div>
+                  <div class="stat-card tappable" onclick="Dashboard.openStatDetail('energy')">
+                    <div class="stat-icon stat-icon--yellow"><i class="bi bi-lightning-fill"></i></div>
+                    <div class="stat-value-group">
+                      <span id="stat-energy" class="stat-value font-mono">156</span>
+                      <span class="stat-unit">Wh</span>
+                    </div>
+                    <span class="stat-label">Energy Generated</span>
+                  </div>
+                  <div class="stat-card tappable" onclick="Dashboard.openStatDetail('waste')">
+                    <div class="stat-icon stat-icon--green"><i class="bi bi-trash3-fill"></i></div>
+                    <div class="stat-value-group">
+                      <span id="stat-waste" class="stat-value font-mono">8.5</span>
+                      <span class="stat-unit">kg</span>
+                    </div>
+                    <span class="stat-label">Waste Processed</span>
+                  </div>
+                  <div class="stat-card tappable" onclick="Dashboard.openStatDetail('co2')">
+                    <div class="stat-icon stat-icon--teal"><i class="bi bi-shield-check"></i></div>
+                    <div class="stat-value-group">
+                      <span id="stat-co2" class="stat-value font-mono">10.2</span>
+                      <span class="stat-unit">kg</span>
+                    </div>
+                    <span class="stat-label">CO₂ Prevented</span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 3. SESSION STATUS -->
+              <section class="dashboard-section">
+                <h3 class="section-title"><span class="section-arrow">▶</span> Session</h3>
+                <div class="glass-card session-status-card" id="sessionStatusCard">
+                  <!-- Header -->
+                  <div class="session-header">
+                    <div class="card-header__left">
+                      <div class="status-icon-wrap" id="sessionIconWrap">
+                        <i class="bi bi-hourglass-split" id="sessionStatusIcon"></i>
+                      </div>
+                      <div class="session-title-group">
+                        <span class="session-label">Session Status</span>
+                        <span class="phase-name" id="currentPhaseName">No Active Session</span>
+                      </div>
+                    </div>
+                    <div class="timer-badge" id="sessionTimer" hidden>
+                      <i class="bi bi-clock"></i>
+                      <span id="sessionTimerValue">00:00</span>
+                    </div>
+                  </div>
+
+                  <!-- Phase Visual Indicator -->
+                  <div class="phase-indicator">
+                    <div class="phase-item" id="phase-load" data-phase="load">
+                      <div class="phase-circle"><i class="bi bi-box-seam"></i></div>
+                      <span class="phase-label">Load</span>
+                    </div>
+                    <div class="phase-connector">
+                      <div class="phase-connector__fill" id="phase-line-1"></div>
+                    </div>
+                    <div class="phase-item" id="phase-heat" data-phase="heat">
+                      <div class="phase-circle"><i class="bi bi-thermometer-sun"></i></div>
+                      <span class="phase-label">Heat</span>
+                    </div>
+                    <div class="phase-connector">
+                      <div class="phase-connector__fill" id="phase-line-2"></div>
+                    </div>
+                    <div class="phase-item" id="phase-burn" data-phase="burn">
+                      <div class="phase-circle"><i class="bi bi-lightning-charge-fill"></i></div>
+                      <span class="phase-label">Burn</span>
+                    </div>
+                    <div class="phase-connector">
+                      <div class="phase-connector__fill" id="phase-line-3"></div>
+                    </div>
+                    <div class="phase-item" id="phase-cool" data-phase="cool">
+                      <div class="phase-circle"><i class="bi bi-snow"></i></div>
+                      <span class="phase-label">Cool</span>
+                    </div>
+                    <div class="phase-connector">
+                      <div class="phase-connector__fill" id="phase-line-4"></div>
+                    </div>
+                    <div class="phase-item" id="phase-done" data-phase="done">
+                      <div class="phase-circle"><i class="bi bi-check-circle-fill"></i></div>
+                      <span class="phase-label">Done</span>
+                    </div>
+                  </div>
+
+                  <!-- Progress Bar -->
+                  <div class="progress-container">
+                    <div class="progress-bar-session" id="sessionProgressBar"></div>
+                  </div>
+
+                  <!-- Actions -->
+                  <div class="session-actions">
+                    <button class="btn-session btn-session--start" id="startSessionBtn"
+                      onclick="Dashboard.toggleSession()">
+                      <i class="bi bi-play-fill"></i> START SESSION
+                    </button>
+                    <button class="btn-session btn-session--details" id="viewDetailsBtn" hidden
+                      onclick="Navigation.switchScreen(3)">
+                      View Details <i class="bi bi-arrow-right"></i>
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 4. SESSION DATA SECTIONS (Active Only) -->
+              <div id="activeSessionData" hidden>
+
+                <!-- 4A. REACTOR MONITORING -->
+                <section class="dashboard-section">
+                  <h3 class="section-title"><span class="section-arrow">▶</span> Reactor</h3>
+                  <div class="glass-card reactor-card">
+                    <div class="card-header">
+                      <div class="card-header__left">
+                        <div class="icon-box icon-box--orange"><i class="bi bi-fire"></i></div>
+                        <span class="card-title">Reactor Status</span>
+                      </div>
+                      <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+                    </div>
+                    <div class="reactor-grid">
+                      <!-- Temperature Column -->
+                      <div class="reactor-col tappable" onclick="App.openSensorModal('temperature')">
+                        <span class="tiny-label">TEMPERATURE</span>
+                        <div class="gauge-container">
+                          <div class="gauge-scale">
+                            <span class="gauge-label gauge-label--red">1000°</span>
+                            <span class="gauge-label gauge-label--orange">800°</span>
+                            <span class="gauge-label gauge-label--yellow">600°</span>
+                            <span class="gauge-label gauge-label--green">400°</span>
+                            <span class="gauge-label gauge-label--cyan">200°</span>
+                            <span class="gauge-label gauge-label--blue">0°</span>
+                          </div>
+                          <div class="gauge-bar-wrapper">
+                            <div id="temp-gauge-bar" class="gauge-bar-fill" style="height: 2%;"></div>
+                          </div>
+                          <div class="gauge-value-wrap">
+                            <span id="temp-value" class="gauge-value orange-text">25°</span>
+                          </div>
+                        </div>
+                        <span id="temp-hint" class="hint-text">Tap for chart</span>
+                      </div>
+
+                      <!-- Waste Tracker Column -->
+                      <div class="reactor-col reactor-col--right tappable" onclick="App.openSensorModal('waste')">
+                        <span class="tiny-label">WASTE TRACKER</span>
+                        <div class="waste-tracker-content">
+                          <div class="horizontal-progress">
+                            <div class="horizontal-progress__fill" id="waste-progress-bar" style="width: 100%;"></div>
+                          </div>
+                          <div class="horizontal-progress__labels">
+                            <span>0g</span>
+                            <span id="waste-initial-label">2500g</span>
+                          </div>
+                          <div class="waste-value-wrap">
+                            <span class="large-value eco-text">
+                              <span id="waste-current-val">0</span><small>g remaining</small>
+                            </span>
+                          </div>
+                          <div class="waste-grid">
+                            <div class="waste-stat-box">
+                              <span class="tiny-label">INITIAL</span>
+                              <span id="waste-initial-val" class="small-value font-mono">0g</span>
+                            </div>
+                            <div class="waste-stat-box waste-stat-box--orange">
+                              <span class="tiny-label">BURNED</span>
+                              <span id="waste-burned-val" class="small-value font-mono orange-text">0g</span>
+                            </div>
+                          </div>
+                          <span class="hint-text">Tap for chart</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 4B. FILTRATION -->
+                <section class="dashboard-section">
+                  <h3 class="section-title"><span class="section-arrow">▶</span> Filtration</h3>
+                  <div class="glass-card filtration-card">
+                    <div class="card-header">
+                      <div class="card-header__left">
+                        <div class="icon-box icon-box--teal"><i class="bi bi-wind"></i></div>
+                        <span class="card-title">Air Quality</span>
+                      </div>
+                      <button class="expand-btn tappable" onclick="App.openSensorModal('air')">
+                        <i class="bi bi-arrows-fullscreen"></i>
+                      </button>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="chart-legend-row">
+                      <div class="legend-item"><span class="dot dot--red"></span> Raw Smoke (PPM)</div>
+                      <div class="legend-item"><span class="dot dot--green"></span> Filtered Air (AQI)</div>
+                    </div>
+
+                    <!-- Dual Line Graph -->
+                    <div class="chart-container" style="height: 112px;">
+                      <canvas id="filtrationChart"></canvas>
+                    </div>
+
+                    <!-- Half Circle Gauges -->
+                    <div class="gauge-status-row">
+                      <!-- Raw Smoke -->
+                      <div class="half-gauge-item">
+                        <span class="tiny-label" style="color: #ef4444;">RAW SMOKE</span>
+                        <div class="half-gauge">
+                          <svg viewBox="0 0 100 55">
+                            <defs>
+                              <linearGradient id="smokeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color: #22c55e" />
+                                <stop offset="33%" style="stop-color: #facc15" />
+                                <stop offset="66%" style="stop-color: #f97316" />
+                                <stop offset="100%" style="stop-color: #ef4444" />
+                              </linearGradient>
+                            </defs>
+                            <path class="gauge-bg" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="8"
+                              stroke-linecap="round"></path>
+                            <path id="gauge-raw-smoke" d="M10 50 A40 40 0 0 1 90 50" fill="none"
+                              stroke="url(#smokeGradient)" stroke-width="8" stroke-linecap="round"
+                              stroke-dasharray="126" stroke-dashoffset="126"></path>
+                          </svg>
+                          <div class="gauge-center-val">
+                            <span id="val-raw-smoke" class="gauge-number">0</span>
+                            <span class="gauge-unit">PPM</span>
+                          </div>
+                        </div>
+                        <span id="status-raw-smoke" class="badge badge--green">GOOD</span>
+                      </div>
+
+                      <!-- Filtered Air -->
+                      <div class="half-gauge-item">
+                        <span class="tiny-label" style="color: #22c55e;">FILTERED AIR</span>
+                        <div class="half-gauge">
+                          <svg viewBox="0 0 100 55">
+                            <defs>
+                              <linearGradient id="airGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color: #22c55e" />
+                                <stop offset="33%" style="stop-color: #facc15" />
+                                <stop offset="66%" style="stop-color: #f97316" />
+                                <stop offset="100%" style="stop-color: #ef4444" />
+                              </linearGradient>
+                            </defs>
+                            <path class="gauge-bg" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="8"
+                              stroke-linecap="round"></path>
+                            <path id="gauge-filtered-air" d="M10 50 A40 40 0 0 1 90 50" fill="none"
+                              stroke="url(#airGradient)" stroke-width="8" stroke-linecap="round" stroke-dasharray="126"
+                              stroke-dashoffset="126"></path>
+                          </svg>
+                          <div class="gauge-center-val">
+                            <span id="val-filtered-air" class="gauge-number">0</span>
+                            <span class="gauge-unit">AQI</span>
+                          </div>
+                        </div>
+                        <span id="status-filtered-air" class="badge badge--green">GOOD</span>
+                      </div>
+                    </div>
+
+                    <!-- AQI Legend Bar -->
+                    <div class="aqi-legend">
+                      <div class="aqi-legend__item"><span class="aqi-dot" style="background:#22c55e;"></span> Good
+                      </div>
+                      <div class="aqi-legend__item"><span class="aqi-dot" style="background:#facc15;"></span> Moderate
+                      </div>
+                      <div class="aqi-legend__item"><span class="aqi-dot" style="background:#f97316;"></span> Unhealthy
+                      </div>
+                      <div class="aqi-legend__item"><span class="aqi-dot" style="background:#ef4444;"></span> Hazardous
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 4C. POWER OUTPUT -->
+                <section class="dashboard-section">
+                  <h3 class="section-title"><span class="section-arrow">▶</span> Power Output</h3>
+                  <div class="glass-card power-card tappable" onclick="App.openPowerModal()">
+                    <div class="card-header">
+                      <div class="card-header__left">
+                        <div class="icon-box icon-box--yellow"><i class="bi bi-lightning-fill"></i></div>
+                        <span class="card-title">Live Power Output</span>
+                      </div>
+                      <button class="expand-btn">
+                        <i class="bi bi-arrows-fullscreen"></i>
+                        <span class="expand-label">Expand</span>
+                      </button>
+                    </div>
+                    <div class="power-hero">
+                      <span class="power-value font-mono">
+                        <span id="power-val-main">0.0</span><small>W</small>
+                      </span>
+                    </div>
+                    <div class="chart-container" style="height: 128px;">
+                      <canvas id="livePowerChart"></canvas>
+                    </div>
+                  </div>
+                </section>
+              </div><!-- END activeSessionData -->
+
+              <!-- 5. CHARGING SERVICE CARD -->
+              <section class="dashboard-section">
+                <h3 class="section-title"><span class="section-arrow">▶</span> Charging Service</h3>
+                <div class="glass-card charging-card">
+                  <div class="card-header">
+                    <div class="card-header__left">
+                      <div class="icon-box icon-box--amber"><i class="bi bi-plug-fill"></i></div>
+                      <span class="card-title">Energy Summary</span>
+                    </div>
+                  </div>
+                  <div class="filter-tabs">
+                    <button class="filter-pill active" data-filter="today"
+                      onclick="Dashboard.setChargingFilter('today', this)">Today</button>
+                    <button class="filter-pill" data-filter="week"
+                      onclick="Dashboard.setChargingFilter('week', this)">Week</button>
+                    <button class="filter-pill" data-filter="month"
+                      onclick="Dashboard.setChargingFilter('month', this)">Month</button>
+                  </div>
+                  <div class="energy-drawn-box">
+                    <span class="tiny-label">ENERGY GENERATED</span>
+                    <span id="charging-energy-val" class="energy-value font-mono">0.0</span>
+                    <span class="unit-label">Watt-hours (Wh)</span>
+                  </div>
+                </div>
+              </section>
+
+            </div><!-- END screen-dashboard -->
+
+            <!-- ==================== SCREEN 2: ANALYTICS ==================== -->
+            <div id="screen-analytics" class="app-screen" hidden>
+              <div class="analytics-header">
+                <h3 class="section-title"><span class="section-arrow">▶</span> System Analytics</h3>
+                <div class="glass-pill-select-wrap">
+                  <select id="analytics-time-range" class="glass-pill-select"
+                    onchange="Analytics.updateRange(this.value)">
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="all">All Time</option>
+                  </select>
+                </div>
               </div>
-            </div>
 
-          <!-- App Bottom Navigation -->
+              <!-- Waste Type Distribution -->
+              <div class="glass-card">
+                <div class="card-header">
+                  <div class="card-header__left">
+                    <div class="icon-box icon-box--purple"><i class="bi bi-box-seam-fill"></i></div>
+                    <span class="card-title">Waste Grade Distribution</span>
+                  </div>
+                </div>
+                <div class="waste-dist-bars" id="waste-dist-container"></div>
+              </div>
+
+              <!-- Energy Trend Chart -->
+              <div class="glass-card">
+                <div class="card-header">
+                  <div class="card-header__left">
+                    <div class="icon-box icon-box--yellow"><i class="bi bi-lightning-fill"></i></div>
+                    <span class="card-title">Energy Generation Trend</span>
+                  </div>
+                </div>
+                <div class="chart-container" style="height: 180px; margin-top: 12px;">
+                  <canvas id="energyTrendChart"></canvas>
+                </div>
+              </div>
+
+              <!-- Monthly Comparison -->
+              <div class="glass-card">
+                <div class="card-header">
+                  <div class="card-header__left">
+                    <div class="icon-box icon-box--teal"><i class="bi bi-bar-chart-fill"></i></div>
+                    <span class="card-title">Monthly Comparison</span>
+                  </div>
+                </div>
+                <div class="comparison-grid">
+                  <div class="comparison-card comparison-card--primary">
+                    <span class="tiny-label">THIS MONTH</span>
+                    <span id="comp-this-month" class="stat-value font-mono">1,250</span>
+                    <span class="stat-unit">Wh Generated</span>
+                  </div>
+                  <div class="comparison-card">
+                    <span class="tiny-label">LAST MONTH</span>
+                    <span id="comp-last-month" class="stat-value font-mono">980</span>
+                    <span class="stat-unit">Wh Generated</span>
+                  </div>
+                </div>
+                <div id="comp-trend" class="trend-indicator up">
+                  <i class="bi bi-arrow-up-right"></i>
+                  <span>+24% vs last month</span>
+                </div>
+              </div>
+
+              <!-- AI Predictions -->
+              <div class="glass-card ai-prediction-card">
+                <div class="card-header">
+                  <div class="card-header__left">
+                    <div class="icon-box icon-box--purple"><i class="bi bi-cpu"></i></div>
+                    <span class="card-title">AI Predictions</span>
+                  </div>
+                  <span class="ai-badge"><i class="bi bi-stars"></i> ML POWERED</span>
+                </div>
+                <div class="prediction-grid">
+                  <div class="pred-item pred-item--blue">
+                    <span class="tiny-label">WASTE TYPE</span>
+                    <span id="pred-waste-type" class="pred-value">Biomass</span>
+                  </div>
+                  <div class="pred-item pred-item--purple">
+                    <span class="tiny-label">EST. TIME</span>
+                    <span id="pred-time" class="pred-value">45m</span>
+                  </div>
+                  <div class="pred-item pred-item--yellow">
+                    <span class="tiny-label">EST. ENERGY</span>
+                    <span id="pred-energy" class="pred-value">35 Wh</span>
+                  </div>
+                  <div class="pred-item pred-item--green">
+                    <span class="tiny-label">CONFIDENCE</span>
+                    <span id="pred-confidence" class="pred-value">87%</span>
+                  </div>
+                </div>
+                <button class="btn-refresh-pred" onclick="Analytics.generatePrediction()">
+                  <i class="bi bi-arrow-repeat"></i> REFRESH PREDICTION
+                </button>
+              </div>
+            </div><!-- END screen-analytics -->
+
+            <!-- ==================== SCREEN 3: CONTROL ==================== -->
+            <div id="screen-control" class="app-screen" hidden>
+
+              <!-- ESP32 Connection Status -->
+              <div class="glass-card connection-card">
+                <div class="card-header">
+                  <div class="card-header__left">
+                    <div class="conn-chip-icon">
+                      <i class="bi bi-cpu-fill"></i>
+                      <span id="conn-dot" class="conn-status-dot conn-status-dot--online"></span>
+                    </div>
+                    <div class="conn-info">
+                      <div class="conn-info__top">
+                        <span class="conn-label">ESP32 Connected</span>
+                        <span id="conn-status" class="badge badge--online">ONLINE</span>
+                      </div>
+                      <span class="conn-details">192.168.1.100 · Last sync: <span id="last-sync">Just now</span></span>
+                    </div>
+                  </div>
+                  <div class="signal-strength">
+                    <div class="signal-bar signal-bar--active" style="height: 6px;"></div>
+                    <div class="signal-bar signal-bar--active" style="height: 10px;"></div>
+                    <div class="signal-bar signal-bar--active" style="height: 14px;"></div>
+                    <div class="signal-bar" style="height: 14px;"></div>
+                  </div>
+                </div>
+                <div class="conn-meta">
+                  <span class="conn-meta__item">Firmware: v2.4.1</span>
+                  <span class="conn-meta__item">Latency: <span id="latency-val">45</span>ms</span>
+                </div>
+              </div>
+
+              <!-- Session Stepper -->
+              <div class="glass-card session-stepper-card">
+                <!-- Welcome Panel -->
+                <div id="panel-welcome" class="stepper-welcome">
+                  <div class="welcome-gradient-bg">
+                    <div class="welcome-circle welcome-circle--1"></div>
+                    <div class="welcome-circle welcome-circle--2"></div>
+                  </div>
+                  <div class="welcome-content">
+                    <div class="welcome-icon-wrap">
+                      <i class="bi bi-fire"></i>
+                    </div>
+                    <h4 class="welcome-title">START NEW SESSION</h4>
+                    <p class="welcome-subtitle">Load the reactor to begin energy generation</p>
+                    <button class="btn-start-stepper" onclick="SessionController.startSession()">
+                      <i class="bi bi-play-fill"></i> BEGIN
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Active Stepper -->
+                <div id="panel-stepper" class="panel-stepper" hidden>
+                  <div class="stepper-header">
+                    <div class="stepper-header__left">
+                      <span class="session-active-dot"></span>
+                      <span class="session-active-label">SESSION ACTIVE</span>
+                    </div>
+                    <span id="stepper-status" class="stepper-step-badge">STEP 1 OF 5</span>
+                  </div>
+
+                  <div class="stepper-progress-bg">
+                    <div id="stepper-progress" class="stepper-progress-fill"></div>
+                  </div>
+
+                  <div class="stepper-steps-icons">
+                    <div class="step-icon-wrap active" id="step-icon-1">
+                      <div class="step-circle"><i class="bi bi-box-seam"></i></div>
+                      <span class="step-label" id="step-label-1">INPUT</span>
+                    </div>
+                    <div class="step-icon-wrap" id="step-icon-2">
+                      <div class="step-circle"><i class="bi bi-thermometer-high"></i></div>
+                      <span class="step-label" id="step-label-2">HEAT</span>
+                    </div>
+                    <div class="step-icon-wrap" id="step-icon-3">
+                      <div class="step-circle"><i class="bi bi-fire"></i></div>
+                      <span class="step-label" id="step-label-3">BURN</span>
+                    </div>
+                    <div class="step-icon-wrap" id="step-icon-4">
+                      <div class="step-circle"><i class="bi bi-snow"></i></div>
+                      <span class="step-label" id="step-label-4">COOL</span>
+                    </div>
+                    <div class="step-icon-wrap" id="step-icon-5">
+                      <div class="step-circle"><i class="bi bi-check-circle-fill"></i></div>
+                      <span class="step-label" id="step-label-5">DONE</span>
+                    </div>
+                  </div>
+
+                  <!-- Step 1: Input Waste -->
+                  <div id="step-panel-1" class="step-panel step-panel--yellow" hidden>
+                    <div class="step-panel__header">
+                      <span class="step-phase-label pulse-text">STEP 1: INPUT WASTE</span>
+                    </div>
+                    <div class="weight-display-card">
+                      <span class="tiny-label">CURRENT WEIGHT</span>
+                      <div class="weight-display font-mono">
+                        <span id="session-weight">0.00</span><small>kg</small>
+                      </div>
+                    </div>
+                    <div class="weight-status-row">
+                      <div id="weight-indicator" class="status-dot status-dot--gray"></div>
+                      <span id="weight-status" class="status-text">Waiting for waste...</span>
+                    </div>
+                    <button class="btn-primary btn-primary--amber" onclick="SessionController.confirmInitialWeight()">
+                      <i class="bi bi-check2-circle"></i> CONFIRM INITIAL WEIGHT
+                    </button>
+                  </div>
+
+                  <!-- Step 2: Pre-Heating -->
+                  <div id="step-panel-2" class="step-panel step-panel--orange" hidden>
+                    <div class="step-panel__header">
+                      <span class="step-phase-label">STEP 2: PRE-HEATING</span>
+                    </div>
+                    <div class="step2-info-grid">
+                      <div class="info-box">
+                        <span class="tiny-label">INITIAL WEIGHT (Wi)</span>
+                        <span id="step2-initial" class="info-value font-mono">0.0 kg</span>
+                      </div>
+                      <div class="info-box">
+                        <span class="tiny-label">REACTOR TEMPERATURE</span>
+                        <span id="current-temp-step2" class="info-value font-mono orange-text">25°C</span>
+                      </div>
+                    </div>
+                    <div class="weight-status-row">
+                      <div id="temp-indicator-step2" class="status-dot status-dot--orange pulse-dot"></div>
+                      <span id="temp-status-step2" class="status-text orange-text">Warming up...</span>
+                    </div>
+                    <button class="btn-primary btn-primary--danger" id="btn-ignite"
+                      onclick="SessionController.proceedToStep3()">
+                      <i class="bi bi-fire"></i> IGNITE & START
+                    </button>
+                  </div>
+
+                  <!-- Step 3: Burning Active -->
+                  <div id="step-panel-3" class="step-panel step-panel--red" hidden>
+                    <div class="step-panel__header">
+                      <span class="step-phase-label pulse-text">STEP 3: BURNING IN PROGRESS</span>
+                    </div>
+                    <div class="teg-indicator">
+                      <i class="bi bi-lightning-charge-fill pulse-icon"></i>
+                      <span>TEG Generating Power</span>
+                    </div>
+                    <div class="burn-grid">
+                      <div class="burn-sub-card">
+                        <span class="tiny-label">TEMP</span>
+                        <span id="step3-temp" class="burn-val orange-text font-mono">--°C</span>
+                      </div>
+                      <div class="burn-sub-card">
+                        <span class="tiny-label">WEIGHT</span>
+                        <span id="step3-current" class="burn-val font-mono">--g</span>
+                      </div>
+                      <div class="burn-sub-card">
+                        <span class="tiny-label">POWER</span>
+                        <span id="step3-power" class="burn-val eco-text font-mono">--W</span>
+                      </div>
+                      <div class="burn-sub-card">
+                        <span class="tiny-label">BATTERY</span>
+                        <span id="step3-battery" class="burn-val font-mono">--%</span>
+                      </div>
+                    </div>
+                    <div class="burn-progress-section">
+                      <div class="burn-progress-header">
+                        <span class="tiny-label">BURN PROGRESS</span>
+                        <span id="step3-burned" class="tiny-label orange-text">0g burned</span>
+                      </div>
+                      <div class="progress-bg">
+                        <div id="burn-progress" class="progress-fill progress-fill--burn"></div>
+                      </div>
+                      <span id="burned-weight" class="burn-weight-label">0g burned</span>
+                    </div>
+                  </div>
+
+                  <!-- Step 4: Finalizing -->
+                  <div id="step-panel-4" class="step-panel step-panel--blue" hidden>
+                    <div class="step-panel__header">
+                      <span class="step-phase-label">STEP 4: FINALIZING DATA</span>
+                    </div>
+                    <div class="finalize-summary">
+                      <div class="calc-item">
+                        <span class="tiny-label">INITIAL</span>
+                        <span id="calc-initial" class="calc-value font-mono">0.00 kg</span>
+                      </div>
+                      <div class="calc-item">
+                        <span class="tiny-label">RESIDUE</span>
+                        <span id="calc-final" class="calc-value font-mono">0.00 kg</span>
+                      </div>
+                      <div class="calc-item calc-item--highlight">
+                        <span class="tiny-label">BURNED</span>
+                        <span id="calc-burned" class="calc-value font-mono eco-text">0.00 kg</span>
+                      </div>
+                    </div>
+                    <div class="cooldown-box">
+                      <i class="bi bi-fan fan-spin"></i>
+                      <p class="cooldown-msg">Fire out detected. Clearing smoke...</p>
+                      <span id="smoke-clear-timer" class="cooldown-timer pulse-text">Fan running — Please wait</span>
+                    </div>
+                  </div>
+
+                  <!-- Step 5: Complete -->
+                  <div id="step-panel-5" class="step-panel step-panel--green" hidden>
+                    <div class="step-panel__header">
+                      <span class="step-phase-label eco-text">SESSION COMPLETE!</span>
+                    </div>
+                    <div class="success-icon-wrap">
+                      <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div class="grade-badge-large" id="summary-grade-wrap">
+                      <span id="summary-grade">A</span>
+                    </div>
+                    <span class="grade-sublabel">EFFICIENCY GRADE</span>
+                    <div class="summary-grid">
+                      <div class="summ-item">
+                        <span class="summ-label">Initial Waste (Wi)</span>
+                        <span id="summary-initial" class="summ-value font-mono">0.00 kg</span>
+                      </div>
+                      <div class="summ-item">
+                        <span class="summ-label">Final Residue (Wf)</span>
+                        <span id="summary-residue" class="summ-value font-mono">0.00 kg</span>
+                      </div>
+                      <div class="summ-item summ-item--highlight">
+                        <span class="summ-label">Burned Waste</span>
+                        <span id="summary-burned" class="summ-value font-mono orange-text">0.00 kg</span>
+                      </div>
+                      <div class="summ-item summ-item--highlight">
+                        <span class="summ-label">Energy Generated</span>
+                        <span id="summary-energy" class="summ-value font-mono eco-text">0 Wh</span>
+                      </div>
+                    </div>
+                    <div class="co2-display">
+                      <span class="tiny-label">CO₂ PREVENTED</span>
+                      <span id="summary-co2" class="co2-value font-mono eco-text">0.00 kg</span>
+                    </div>
+                    <button class="btn-primary" onclick="SessionController.finishSession()">
+                      <i class="bi bi-arrow-clockwise"></i> SAVE & FINISH
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Hardware Controls -->
+              <h3 class="section-title"><span class="section-arrow">▶</span> Hardware Controls</h3>
+              <div class="control-grid">
+                <!-- Charging Mode -->
+                <div class="glass-card hardware-card">
+                  <div class="hardware-card__header">
+                    <div class="icon-box icon-box--yellow"><i class="bi bi-lightning-charge"></i></div>
+                    <span class="hardware-title">Charging Mode</span>
+                  </div>
+                  <div class="control-actions">
+                    <button id="mode-auto" class="control-pill active"
+                      onclick="ChargingMode.setMode('auto')">Auto</button>
+                    <button id="mode-manual" class="control-pill"
+                      onclick="ChargingMode.setMode('manual')">Manual</button>
+                  </div>
+                  <div id="battery-selector" class="battery-selector" hidden>
+                    <span class="tiny-label">TARGET BATTERY</span>
+                    <div class="control-actions">
+                      <button id="target-internal" class="btn-mini active"
+                        onclick="ChargingMode.setTargetBattery('internal')">Internal (12V)</button>
+                      <button id="target-secondary" class="btn-mini"
+                        onclick="ChargingMode.setTargetBattery('secondary')">Secondary (12V)</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Exhaust Fan -->
+                <div class="glass-card hardware-card">
+                  <div class="hardware-card__header">
+                    <div class="icon-box icon-box--blue"><i class="bi bi-fan"></i></div>
+                    <div class="hardware-title-group">
+                      <span class="hardware-title">Exhaust Fan</span>
+                      <div class="hardware-status">
+                        <span id="fan-dot" class="status-dot status-dot--gray"></span>
+                        <span id="fan-text" class="status-text">Stopped</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="control-actions">
+                    <button id="fan-auto" class="control-pill active" onclick="FanControl.setMode('auto')">Auto</button>
+                    <button id="fan-on" class="control-pill" onclick="FanControl.setMode('on')">On</button>
+                    <button id="fan-off" class="control-pill" onclick="FanControl.setMode('off')">Off</button>
+                  </div>
+                </div>
+
+                <!-- USB Charging -->
+                <div class="glass-card hardware-card">
+                  <div class="hardware-card__header">
+                    <div class="icon-box icon-box--orange"><i class="bi bi-usb-symbol"></i></div>
+                    <div class="hardware-title-group">
+                      <span class="hardware-title">USB Charging</span>
+                      <div class="hardware-status">
+                        <span id="usb-dot" class="status-dot status-dot--gray"></span>
+                        <span id="usb-text" class="status-text">Inactive</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="control-actions">
+                    <button id="usb-off" class="control-pill active" onclick="UsbControl.setEnabled(false)">Off</button>
+                    <button id="usb-on" class="control-pill" onclick="UsbControl.setEnabled(true)">On</button>
+                  </div>
+                </div>
+              </div>
+            </div><!-- END screen-control -->
+
+            <!-- ==================== SCREEN 4: ALERTS ==================== -->
+            <div id="screen-alerts" class="app-screen" hidden>
+              <div class="alerts-header">
+                <h3 class="section-title"><span class="section-arrow">▶</span> Notifications</h3>
+                <span class="unread-badge" id="unreadBadge">0 unread</span>
+              </div>
+
+              <div class="filter-row">
+                <button class="filter-chip active" data-type="all" onclick="AlertSystem.filterAlerts('all', this)">
+                  All <span class="chip-count" id="alert-count-all">0</span>
+                </button>
+                <button class="filter-chip" data-type="critical" onclick="AlertSystem.filterAlerts('critical', this)">
+                  <span class="chip-dot" style="background:#ef4444;"></span> Critical <span class="chip-count"
+                    id="alert-count-critical">0</span>
+                </button>
+                <button class="filter-chip" data-type="warning" onclick="AlertSystem.filterAlerts('warning', this)">
+                  <span class="chip-dot" style="background:#f97316;"></span> Warning <span class="chip-count"
+                    id="alert-count-warning">0</span>
+                </button>
+                <button class="filter-chip" data-type="info" onclick="AlertSystem.filterAlerts('info', this)">
+                  <span class="chip-dot" style="background:#22c55e;"></span> Info <span class="chip-count"
+                    id="alert-count-info">0</span>
+                </button>
+                <button class="btn-mark-read" onclick="AlertSystem.markAllRead()" title="Clear All">
+                  <i class="bi bi-check2-all"></i>
+                </button>
+              </div>
+
+              <div id="alerts-container" class="alerts-list">
+                <!-- Alerts injected by JS -->
+              </div>
+
+              <!-- Empty State -->
+              <div id="alerts-empty" class="empty-state" hidden>
+                <div class="empty-state__icon"><i class="bi bi-bell-slash"></i></div>
+                <p class="empty-state__title">No alerts</p>
+                <p class="empty-state__subtitle">You're all caught up!</p>
+              </div>
+            </div><!-- END screen-alerts -->
+
+            <!-- ==================== SCREEN 5: REPORTS ==================== -->
+            <div id="screen-reports" class="app-screen" hidden>
+              <div class="reports-header">
+                <h3 class="section-title"><span class="section-arrow">▶</span> Session History</h3>
+                <div class="reports-actions">
+                  <button class="btn-export btn-export--csv" onclick="Reports.exportData('csv')">
+                    <i class="bi bi-filetype-csv"></i> CSV
+                  </button>
+                  <button class="btn-export btn-export--pdf" onclick="Reports.exportData('pdf')">
+                    <i class="bi bi-filetype-pdf"></i> PDF
+                  </button>
+                </div>
+              </div>
+
+              <!-- Date Filter -->
+              <div class="glass-card reports-filter-card">
+                <div class="card-header__left">
+                  <i class="bi bi-calendar3" style="color: #6366f1;"></i>
+                  <span class="tiny-label">FILTER BY DATE</span>
+                </div>
+                <select id="date-filter" class="glass-pill-select" onchange="ReportsFilter.setDateFilter(this.value)">
+                  <option value="today">Today</option>
+                  <option value="yesterday">Yesterday</option>
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                  <option value="all">All Sessions</option>
+                </select>
+              </div>
+
+              <!-- Summary Stats -->
+              <div class="reports-summary-grid">
+                <div class="reports-stat reports-stat--blue">
+                  <span class="tiny-label">Sessions</span>
+                  <span id="report-stat-sessions" class="reports-stat__value font-mono">12</span>
+                </div>
+                <div class="reports-stat reports-stat--green">
+                  <span class="tiny-label">Energy</span>
+                  <span id="report-stat-energy" class="reports-stat__value font-mono">156<small>Wh</small></span>
+                </div>
+                <div class="reports-stat reports-stat--orange">
+                  <span class="tiny-label">Waste</span>
+                  <span id="report-stat-waste" class="reports-stat__value font-mono">8.5<small>kg</small></span>
+                </div>
+                <div class="reports-stat reports-stat--teal">
+                  <span class="tiny-label">Avg Grade</span>
+                  <span id="report-stat-grade" class="reports-stat__value font-mono">A</span>
+                </div>
+              </div>
+
+              <!-- Search -->
+              <div class="search-bar glass-pill">
+                <i class="bi bi-search"></i>
+                <input type="text" id="search-sessions" placeholder="Search by ID or Grade..."
+                  oninput="ReportsFilter.setSearchQuery(this.value)" />
+                <button id="clear-search" class="clear-search-btn" hidden onclick="ReportsFilter.clearSearch()">
+                  <i class="bi bi-x-circle-fill"></i>
+                </button>
+              </div>
+
+              <!-- Session Count -->
+              <div class="reports-list-header">
+                <span class="tiny-label">SESSION HISTORY</span>
+                <span id="sessions-count" class="tiny-label">4 sessions</span>
+              </div>
+
+              <!-- Session List -->
+              <div id="reports-list" class="reports-list">
+                <!-- Reports injected by JS -->
+              </div>
+
+              <!-- No Results -->
+              <div id="no-results" class="empty-state" hidden>
+                <div class="empty-state__icon"><i class="bi bi-search"></i></div>
+                <p class="empty-state__title">No sessions found</p>
+                <p class="empty-state__subtitle">Try a different search term</p>
+              </div>
+
+              <!-- Load More -->
+              <button class="btn-load-more" onclick="Reports.loadMore()">
+                Load More Sessions <i class="bi bi-chevron-down"></i>
+              </button>
+            </div><!-- END screen-reports -->
+
+          </div><!-- END main-app__content -->
+
+          <!-- ========== BOTTOM NAVIGATION ========== -->
           <nav class="app-nav">
             <div class="app-nav__indicator" id="navIndicator">
               <div class="app-nav__indicator-inner"></div>
             </div>
-            <a href="#" class="app-nav__item app-nav__item--active">
+            <a href="#" class="app-nav__item app-nav__item--active" data-screen="1">
               <i class="bi bi-grid-fill"></i>
               <span>Dashboard</span>
             </a>
-            <a href="#" class="app-nav__item">
+            <a href="#" class="app-nav__item" data-screen="2">
               <i class="bi bi-graph-up"></i>
               <span>Analytics</span>
             </a>
-            <a href="#" class="app-nav__item">
+            <a href="#" class="app-nav__item" data-screen="3">
               <i class="bi bi-cpu-fill"></i>
               <span>Control</span>
             </a>
-            <a href="#" class="app-nav__item">
+            <a href="#" class="app-nav__item" data-screen="4">
               <i class="bi bi-bell-fill"></i>
               <span>Alerts</span>
             </a>
-            <a href="#" class="app-nav__item">
+            <a href="#" class="app-nav__item" data-screen="5">
               <i class="bi bi-file-earmark-bar-graph-fill"></i>
               <span>Reports</span>
             </a>
           </nav>
 
-          <!-- ========== LOGOUT CONFIRMATION MODAL ========== -->
+          <!-- ========== MODALS ========== -->
+
+          <!-- Logout Modal -->
           <div id="logoutModal" class="app-modal" hidden>
             <div class="app-modal__overlay" onclick="AuthScreen.hideLogoutModal()"></div>
             <div class="app-modal__content">
+              <div class="modal-icon-wrap modal-icon-wrap--danger">
+                <i class="bi bi-box-arrow-right"></i>
+              </div>
               <h3 class="app-modal__title">Log Out</h3>
-              <p class="app-modal__desc">Are you sure you want to log out?</p>
+              <p class="app-modal__desc">Are you sure you want to log out of EcoPower?</p>
               <div class="app-modal__actions">
                 <button class="app-modal__btn app-modal__btn--cancel"
                   onclick="AuthScreen.hideLogoutModal()">Cancel</button>
@@ -324,10 +1200,259 @@
               </div>
             </div>
           </div>
-        </div>
+
+          <!-- Sensor Modal -->
+          <div id="sensorModal" class="app-modal" hidden>
+            <div class="app-modal__overlay" onclick="App.closeModal('sensorModal')"></div>
+            <div class="app-modal__content sensor-modal-content">
+              <div class="modal-header">
+                <h3 class="app-modal__title" id="sensorModalTitle">Sensor Data</h3>
+                <button class="close-btn" onclick="App.closeModal('sensorModal')">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="chart-container" style="height: 250px;">
+                  <canvas id="sensorModalChart"></canvas>
+                </div>
+                <div class="modal-footer-label">
+                  <span class="dot dot--blue"></span>
+                  <span>Live Data · Last 1 Hour</span>
+                  <span id="sensorModalValue" class="modal-current-value">Current: --</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Power Modal -->
+          <div id="powerModal" class="app-modal" hidden>
+            <div class="app-modal__overlay" onclick="App.closeModal('powerModal')"></div>
+            <div class="app-modal__content power-modal-content">
+              <div class="modal-pull-indicator"></div>
+              <div class="modal-header">
+                <div class="modal-header__left">
+                  <div class="icon-box icon-box--yellow"><i class="bi bi-lightning-fill"></i></div>
+                  <h3 class="app-modal__title">Live Power</h3>
+                </div>
+                <button class="close-btn" onclick="App.closeModal('powerModal')">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="power-hero power-hero--modal">
+                  <span class="power-value font-mono" id="modal-power-value">
+                    0.0<small>W</small>
+                  </span>
+                </div>
+                <div class="chart-container" style="height: 300px;">
+                  <canvas id="powerModalChart"></canvas>
+                </div>
+                <div class="modal-footer-label">
+                  <span class="dot dot--yellow"></span>
+                  <span>Live Data · Real-time</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Session Detail Modal -->
+          <div id="sessionDetailModal" class="app-modal" hidden>
+            <div class="app-modal__overlay" onclick="App.closeModal('sessionDetailModal')"></div>
+            <div class="app-modal__content session-detail-modal-content">
+              <div class="modal-header">
+                <div class="modal-header__left">
+                  <div id="detail-grade-badge" class="report-grade grade-A">A</div>
+                  <div>
+                    <h3 class="app-modal__title" id="detail-title">Session #128</h3>
+                    <span class="conn-details" id="detail-date">Mar 29, 2026 · 2:34 PM</span>
+                  </div>
+                </div>
+                <button class="close-btn" onclick="App.closeModal('sessionDetailModal')">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+              <div class="modal-body modal-body--scroll">
+                <!-- Status Icons Row -->
+                <div class="detail-status-grid">
+                  <div class="detail-status-item">
+                    <div class="detail-status-icon detail-status-icon--green">
+                      <i class="bi bi-battery-full"></i>
+                    </div>
+                    <span class="tiny-label">Battery</span>
+                    <span id="detail-battery" class="detail-status-val">85%</span>
+                  </div>
+                  <div class="detail-status-item">
+                    <div class="detail-status-icon detail-status-icon--green">
+                      <i class="bi bi-cloud-fill"></i>
+                    </div>
+                    <span class="tiny-label">Smoke</span>
+                    <span id="detail-smoke" class="detail-status-val">45 PPM</span>
+                  </div>
+                  <div class="detail-status-item">
+                    <div class="detail-status-icon detail-status-icon--orange">
+                      <i class="bi bi-thermometer-half"></i>
+                    </div>
+                    <span class="tiny-label">Peak Temp</span>
+                    <span id="detail-temp" class="detail-status-val">850°C</span>
+                  </div>
+                  <div class="detail-status-item">
+                    <div class="detail-status-icon detail-status-icon--yellow">
+                      <i class="bi bi-lightning-fill"></i>
+                    </div>
+                    <span class="tiny-label">Energy</span>
+                    <span id="detail-energy" class="detail-status-val">12.5 Wh</span>
+                  </div>
+                </div>
+
+                <!-- Waste Data -->
+                <div class="detail-section">
+                  <span class="tiny-label">WASTE DATA</span>
+                  <div class="detail-waste-grid">
+                    <div class="detail-waste-item">
+                      <span class="detail-waste-label">Initial</span>
+                      <span id="detail-initial" class="detail-waste-val font-mono">1.5 kg</span>
+                    </div>
+                    <div class="detail-waste-item">
+                      <span class="detail-waste-label">Final</span>
+                      <span id="detail-final" class="detail-waste-val font-mono">0.3 kg</span>
+                    </div>
+                    <div class="detail-waste-item">
+                      <span class="detail-waste-label" style="color:#f97316;">Reduced</span>
+                      <span id="detail-reduction" class="detail-waste-val font-mono orange-text">80%</span>
+                    </div>
+                    <div class="detail-waste-item">
+                      <span class="detail-waste-label" style="color:#ef4444;">Burned</span>
+                      <span id="detail-burned" class="detail-waste-val font-mono" style="color:#ef4444;">1.2 kg</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Smoke Filtration -->
+                <div class="detail-section">
+                  <span class="tiny-label">SMOKE FILTRATION</span>
+                  <div class="detail-smoke-comparison">
+                    <div class="detail-smoke-before">
+                      <span class="tiny-label">Before</span>
+                      <span id="detail-smoke-before" class="detail-smoke-val font-mono" style="color:#ef4444;">450
+                        PPM</span>
+                    </div>
+                    <div class="detail-smoke-arrow">
+                      <i class="bi bi-arrow-right"></i>
+                    </div>
+                    <div class="detail-smoke-after">
+                      <span class="tiny-label">After</span>
+                      <span id="detail-smoke-after" class="detail-smoke-val font-mono eco-text">45 PPM</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Mini Charts -->
+                <div class="detail-section">
+                  <span class="tiny-label">WASTE REDUCTION OVER TIME</span>
+                  <div class="chart-container" style="height: 96px;">
+                    <canvas id="detail-waste-chart"></canvas>
+                  </div>
+                </div>
+                <div class="detail-section">
+                  <span class="tiny-label">TEMPERATURE TREND</span>
+                  <div class="chart-container" style="height: 96px;">
+                    <canvas id="detail-temp-chart"></canvas>
+                  </div>
+                </div>
+
+                <!-- Export Actions -->
+                <div class="detail-export-actions">
+                  <button class="btn-export btn-export--pdf" onclick="Reports.exportSession('pdf')">
+                    <i class="bi bi-filetype-pdf"></i> Export PDF
+                  </button>
+                  <button class="btn-export btn-export--csv" onclick="Reports.exportSession('csv')">
+                    <i class="bi bi-filetype-csv"></i> Export CSV
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Battery Detail Modal -->
+          <div id="batteryDetailModal" class="app-modal" hidden>
+            <div class="app-modal__overlay" onclick="App.closeModal('batteryDetailModal')"></div>
+            <div class="app-modal__content">
+              <div class="modal-header">
+                <div class="modal-header__left">
+                  <div class="icon-box icon-box--eco"><i class="bi bi-battery-charging"></i></div>
+                  <h3 class="app-modal__title" id="batteryModalTitle">Battery Detail</h3>
+                </div>
+                <button class="close-btn" onclick="App.closeModal('batteryDetailModal')">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="battery-detail-hero">
+                  <span id="batteryDetailPct" class="battery-detail-pct font-mono">75%</span>
+                  <span id="batteryDetailVolt" class="battery-detail-volt">12.4V</span>
+                </div>
+                <div class="chart-container" style="height: 150px;">
+                  <canvas id="batteryDetailChart"></canvas>
+                </div>
+                <div class="battery-detail-stats">
+                  <div class="battery-detail-stat">
+                    <span class="tiny-label">STATUS</span>
+                    <span id="batteryDetailStatus" class="eco-text">Charging</span>
+                  </div>
+                  <div class="battery-detail-stat">
+                    <span class="tiny-label">HEALTH</span>
+                    <span id="batteryDetailHealth">98%</span>
+                  </div>
+                  <div class="battery-detail-stat">
+                    <span class="tiny-label">EST. TIME</span>
+                    <span id="batteryDetailETA">2h 15m</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stat Detail Modal -->
+          <div id="statDetailModal" class="app-modal" hidden>
+            <div class="app-modal__overlay" onclick="App.closeModal('statDetailModal')"></div>
+            <div class="app-modal__content">
+              <div class="modal-header">
+                <h3 class="app-modal__title" id="statModalTitle">Stat Detail</h3>
+                <button class="close-btn" onclick="App.closeModal('statDetailModal')">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="stat-detail-grid">
+                  <div class="stat-detail-item">
+                    <span class="tiny-label">TODAY</span>
+                    <span id="statDetailToday" class="stat-value font-mono">--</span>
+                  </div>
+                  <div class="stat-detail-item">
+                    <span class="tiny-label">THIS WEEK</span>
+                    <span id="statDetailWeek" class="stat-value font-mono">--</span>
+                  </div>
+                  <div class="stat-detail-item">
+                    <span class="tiny-label">THIS MONTH</span>
+                    <span id="statDetailMonth" class="stat-value font-mono">--</span>
+                  </div>
+                </div>
+                <div class="chart-container" style="height: 120px;">
+                  <canvas id="statDetailChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toast Notification -->
+          <div id="toastNotification" class="toast-notification" hidden>
+            <span id="toastMessage"></span>
+          </div>
+
+        </div><!-- END mainApp -->
       </main>
 
-      <!-- Navigation bar -->
+      <!-- Bottom Navigation Bar -->
       <nav class="nav-bar">
         <button class="nav-pill" type="button" aria-label="Home"></button>
       </nav>
