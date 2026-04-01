@@ -1442,6 +1442,39 @@
             </div>
           </div>
 
+          <!-- AI Chatbot Draggable FAB -->
+          <button id="chatFab" class="chat-fab" type="button" aria-label="Open AI Assistant">
+            <i class="bi bi-chat-dots-fill"></i>
+          </button>
+
+          <!-- AI Chatbot Full Screen -->
+          <div id="chatScreen" class="chat-screen" hidden>
+            <div class="chat-screen-header">
+              <button id="chatBackBtn" class="chat-back-btn" type="button" aria-label="Back">
+                <i class="bi bi-arrow-left"></i>
+              </button>
+              <div class="chat-screen-title-area">
+                <div class="chat-screen-title">EcoPower Assistant</div>
+                <div class="chat-screen-status"><span class="status-dot"></span> Online</div>
+              </div>
+              <button id="chatClearBtn" class="chat-clear-btn" type="button" aria-label="Clear chat">
+                <i class="bi bi-arrow-clockwise"></i>
+              </button>
+            </div>
+            <div id="chatMessages" class="chat-screen-messages"></div>
+            <div class="chat-screen-footer">
+              <div id="chatQuickChips" class="chat-screen-chips"></div>
+              <div class="chat-screen-input-row">
+                <div class="chat-input-wrapper">
+                  <input id="chatInput" class="chat-screen-input" type="text" placeholder="Ask about your system..." autocomplete="off" />
+                </div>
+                <button id="chatSendBtn" class="chat-screen-send" type="button" aria-label="Send message">
+                  <i class="bi bi-arrow-up"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- Toast Notification -->
           <div id="toastNotification" class="toast-notification" hidden>
             <span id="toastMessage"></span>

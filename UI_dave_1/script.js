@@ -1941,7 +1941,440 @@
   };
 
   // =========================================
-  //  17. BOOTSTRAP
+  //  17. CHATBOT
+  // =========================================
+  const ChatBot = (() => {
+    let fab;
+    let screen;
+    let messagesEl;
+    let inputEl;
+    let sendBtn;
+    let backBtn;
+    let clearBtn;
+    let quickChipsEl;
+    let isOpen = false;
+    let isTyping = false;
+
+    // Drag state
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let fabStartLeft = 0;
+    let fabStartTop = 0;
+    let hasMoved = false;
+
+    const intents = [
+      {
+        id: "battery_status",
+        keywords: ["battery", "charge", "drain", "voltage", "health"],
+        response: (state) => {
+          const batt = state.battery;
+          const status = batt.charging ? "charging" : batt.discharging ? "discharging" : "standby";
+          const health = batt.pct > 80 ? "Battery health looks great!" : batt.pct > 40 ? "Battery is holding up okay." : "Battery is getting low.";
+          return { text: `Internal battery: ${batt.pct}% (${status}). Voltage: ${batt.voltage.toFixed(1)}V. ${health}` };
+        }
+      },
+      {
+        id: "reactor_temp",
+        keywords: ["temperature", "temp", "hot", "heat"],
+        response: (state) => {
+          const temp = state.reactor.temp;
+          let status = "";
+          if (temp > 800) status = "Temperature is very high! Monitor closely.";
+          else if (temp > 500) status = "Temperature is in normal burning range.";
+          else if (temp > 200) status = "Reactor is warming up.";
+          else status = "Reactor is cool/cold. Start a session to heat up.";
+          return { text: `Reactor temperature: ${temp}°C. ${status}` };
+        }
+      },
+      {
+        id: "power_output",
+        keywords: ["power", "watt", "energy", "output", "generate"],
+        response: (state) => {
+          const power = state.power;
+          let note = "";
+          if (power > 5) note = "Great power output!";
+          else if (power > 2) note = "Moderate power generation.";
+          else note = "Low power output. Check reactor temperature and waste grade.";
+          return { text: `Current power output: ${power.toFixed(1)}W. ${note}` };
+        }
+      },
+      {
+        id: "air_quality",
+        keywords: ["air quality", "aqi", "smoke", "filter", "pollution"],
+        response: (state) => {
+          const air = state.air;
+          let status = "";
+          if (air.filtered < 50) status = "Air quality is good after filtration.";
+          else if (air.filtered < 150) status = "Air quality is moderate. Filter is working.";
+          else status = "High AQI! Check filter status.";
+          return { text: `Raw smoke: ${air.raw} PPM. Filtered air: ${air.filtered} AQI. ${status}` };
+        }
+      },
+      {
+        id: "session_status",
+        keywords: ["session", "phase", "step", "progress"],
+        response: (state) => {
+          if (!state.session.active) {
+            return { text: "No active session. Go to the Control screen to start one!" };
+          }
+          const phases = ["Load Waste", "Pre-Heat", "Burn", "Cool Down", "Complete"];
+          const current = state.session.phase;
+          const descriptions = [
+            "Add organic waste to the reactor chamber.",
+            "Reactor is heating up to ignition temperature.",
+            "Waste is burning and generating power!",
+            "Reactor is cooling down safely.",
+            "Session finished. Check your report for details."
+          ];
+          return { text: `Phase ${current + 1}/5: ${phases[current]}. ${descriptions[current]}` };
+        }
+      },
+      {
+        id: "session_start",
+        keywords: ["start", "begin", "new session", "how to start"],
+        response: () => ({
+          text: "To start a session: 1) Go to Control screen, 2) Make sure ESP32 is connected, 3) Add waste in Step 1, 4) Click Ignite in Step 2, 5) Monitor the burn in Step 3."
+        })
+      },
+      {
+        id: "alert_explain",
+        keywords: ["alert", "warning", "critical", "notification"],
+        response: (state) => {
+          const alerts = state.alerts;
+          if (!alerts || alerts.length === 0) {
+            return { text: "No active alerts. Your system is running smoothly!" };
+          }
+          const latest = alerts[alerts.length - 1];
+          return { text: `Latest alert: ${latest.type.toUpperCase()} - ${latest.message}. ${latest.type === "critical" ? "Take action immediately!" : "Monitor the situation."}` };
+        }
+      },
+      {
+        id: "esp32_status",
+        keywords: ["esp32", "connection", "offline", "online", "wifi", "connect"],
+        response: (state) => {
+          const esp = state.esp32;
+          if (esp.online) {
+            return { text: `ESP32 is online! IP: ${esp.ip}, Latency: ${esp.latency}ms, Signal: ${esp.signal}/4 bars.` };
+          }
+          return { text: "ESP32 is offline. Check: 1) Device is powered on, 2) WiFi connection, 3) Correct IP address in settings." };
+        }
+      },
+      {
+        id: "fan_control",
+        keywords: ["fan", "exhaust", "cooling"],
+        response: (state) => {
+          const fan = state.fan;
+          return { text: `Exhaust fan is ${fan.mode}. ${fan.mode === "auto" ? "It runs automatically based on temperature." : fan.mode === "on" ? "Fan is forced on." : "Fan is off. Reactor may heat up faster."}` };
+        }
+      },
+      {
+        id: "optimization",
+        keywords: ["optimize", "improve", "better", "more energy", "efficient", "efficiency"],
+        response: (state) => {
+          const power = state.power;
+          if (power < 2) return { text: `Power is low at ${power.toFixed(1)}W. Tips: Use Grade A waste for maximum energy output. Ensure the reactor door is sealed tightly before starting.` };
+          return { text: "System is running well! Tips for more energy: Use Grade A waste (dry leaves, paper) for highest output. Let the pre-heat phase complete fully before igniting." };
+        }
+      },
+      {
+        id: "report_summary",
+        keywords: ["report", "summary", "how did i do", "this week", "stats"],
+        response: (state) => {
+          const stats = state.stats;
+          return { text: `Today's stats: ${stats.sessions} sessions, ${stats.energy.toFixed(1)}Wh generated, ${stats.waste.toFixed(1)}g waste processed, ${stats.co2.toFixed(1)}g CO2 prevented.` };
+        }
+      },
+      {
+        id: "waste_grade",
+        keywords: ["waste grade", "grade", "what waste", "type of waste"],
+        response: () => ({
+          text: "Waste grades: Grade A (dry leaves, paper) = highest energy. Grade B (food scraps) = moderate. Grade C (wet organic) = lower. Grade D (mixed/wet) = lowest. Use drier waste for better results!"
+        })
+      },
+      {
+        id: "greeting",
+        keywords: ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"],
+        response: () => ({
+          text: "Hello! I'm your EcoPower assistant. I can help you check battery status, reactor temperature, power output, session progress, and troubleshoot issues. What would you like to know?"
+        })
+      },
+      {
+        id: "help",
+        keywords: ["help", "what can you do", "commands", "options", "capabilities"],
+        response: () => ({
+          text: "I can help with: Battery status, Reactor temperature, Power output, Air quality, Session progress, ESP32 connection, Report summaries, Optimization tips. Just ask!"
+        })
+      }
+    ];
+
+    const quickChips = {
+      "screen-dashboard": ["Battery status", "Current power", "Session status"],
+      "screen-analytics": ["Best waste grade?", "Energy trend?", "AI prediction?"],
+      "screen-control": ["How to start session?", "ESP32 status", "Fan control help"],
+      "screen-alerts": ["Explain latest alert", "How to fix this?", "Clear all alerts"],
+      "screen-reports": ["Session summary", "Best session", "Export report"]
+    };
+
+    function getTimestamp() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function matchIntent(text) {
+      const lower = text.toLowerCase();
+      for (const intent of intents) {
+        for (const keyword of intent.keywords) {
+          if (lower.includes(keyword)) {
+            return intent;
+          }
+        }
+      }
+      return null;
+    }
+
+    function getResponse(intent, state) {
+      if (!intent) {
+        return { text: "I'm not sure about that. Try asking about your battery, reactor temperature, power output, or session status. Type 'help' for all options." };
+      }
+      return intent.response(state);
+    }
+
+    function renderMessage(text, type) {
+      const msg = document.createElement("div");
+      msg.className = `chat-msg chat-msg--${type}`;
+
+      const content = document.createElement("div");
+      content.textContent = text;
+      msg.appendChild(content);
+
+      if (type === "bot") {
+        const time = document.createElement("span");
+        time.className = "chat-msg__time";
+        time.textContent = getTimestamp();
+        msg.appendChild(time);
+      }
+
+      messagesEl.appendChild(msg);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function showTyping() {
+      if (isTyping) return;
+      isTyping = true;
+      const typing = document.createElement("div");
+      typing.className = "chat-typing";
+      typing.id = "chatTypingIndicator";
+      typing.innerHTML = '<div class="chat-typing__dot"></div><div class="chat-typing__dot"></div><div class="chat-typing__dot"></div>';
+      messagesEl.appendChild(typing);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function hideTyping() {
+      isTyping = false;
+      const indicator = document.getElementById("chatTypingIndicator");
+      if (indicator) indicator.remove();
+    }
+
+    function updateQuickChips() {
+      const activeScreen = document.querySelector(".screen-content:not([hidden])");
+      const screenId = activeScreen ? activeScreen.id : "screen-dashboard";
+      const chips = quickChips[screenId] || quickChips["screen-dashboard"];
+
+      quickChipsEl.innerHTML = "";
+      chips.forEach(chipText => {
+        const chip = document.createElement("button");
+        chip.className = "chat-chip";
+        chip.textContent = chipText;
+        chip.addEventListener("click", () => handleUserMessage(chipText));
+        quickChipsEl.appendChild(chip);
+      });
+    }
+
+    function handleUserMessage(text) {
+      if (!text.trim()) return;
+
+      renderMessage(text, "user");
+      inputEl.value = "";
+
+      showTyping();
+
+      setTimeout(() => {
+        hideTyping();
+        const intent = matchIntent(text);
+        const response = getResponse(intent, SimEngine.state);
+        renderMessage(response.text, "bot");
+        updateQuickChips();
+      }, 600);
+    }
+
+    function open() {
+      if (isOpen) return;
+      isOpen = true;
+      screen.hidden = false;
+
+      fab.style.opacity = "0";
+      fab.style.pointerEvents = "none";
+
+      requestAnimationFrame(() => {
+        screen.classList.add("open");
+      });
+
+      if (messagesEl.children.length === 0) {
+        renderMessage("Hi! I'm your EcoPower assistant. Ask me about your battery, reactor, power output, or session. Type 'help' to see what I can do!", "bot");
+      }
+
+      updateQuickChips();
+      setTimeout(() => inputEl.focus(), 400);
+    }
+
+    function close() {
+      if (!isOpen) return;
+      isOpen = false;
+      screen.classList.remove("open");
+
+      setTimeout(() => {
+        screen.hidden = true;
+        fab.style.opacity = "1";
+        fab.style.pointerEvents = "auto";
+      }, 350);
+    }
+
+    function clearChat() {
+      messagesEl.innerHTML = "";
+      renderMessage("Chat cleared. How can I help you?", "bot");
+    }
+
+    // --- Drag Logic ---
+    function getScreenRect() {
+      const parent = fab.parentElement;
+      return parent.getBoundingClientRect();
+    }
+
+    function onPointerDown(e) {
+      if (e.button !== undefined && e.button !== 0) return;
+      isDragging = false;
+      hasMoved = false;
+      dragStartX = e.clientX || (e.touches && e.touches[0].clientX);
+      dragStartY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      const rect = fab.getBoundingClientRect();
+      fabStartLeft = rect.left;
+      fabStartTop = rect.top;
+
+      fab.classList.add("dragging");
+      fab.style.transition = "none";
+
+      document.addEventListener("mousemove", onPointerMove);
+      document.addEventListener("mouseup", onPointerUp);
+      document.addEventListener("touchmove", onPointerMove, { passive: false });
+      document.addEventListener("touchend", onPointerUp);
+    }
+
+    function onPointerMove(e) {
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      const dx = clientX - dragStartX;
+      const dy = clientY - dragStartY;
+
+      if (!hasMoved && Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+      hasMoved = true;
+      isDragging = true;
+      e.preventDefault();
+
+      const parent = fab.parentElement;
+      const parentRect = parent.getBoundingClientRect();
+
+      let newX = fabStartLeft + dx - parentRect.left;
+      let newY = fabStartTop + dy - parentRect.top;
+
+      const fabSize = 56;
+      newX = Math.max(0, Math.min(newX, parentRect.width - fabSize));
+      newY = Math.max(0, Math.min(newY, parentRect.height - fabSize));
+
+      fab.style.left = newX + "px";
+      fab.style.top = newY + "px";
+      fab.style.right = "auto";
+      fab.style.bottom = "auto";
+    }
+
+    function onPointerUp(e) {
+      fab.classList.remove("dragging");
+      fab.style.transition = "";
+
+      document.removeEventListener("mousemove", onPointerMove);
+      document.removeEventListener("mouseup", onPointerUp);
+      document.removeEventListener("touchmove", onPointerMove);
+      document.removeEventListener("touchend", onPointerUp);
+
+      if (!hasMoved) {
+        open();
+      }
+
+      isDragging = false;
+      hasMoved = false;
+    }
+
+    function init() {
+      fab = document.getElementById("chatFab");
+      screen = document.getElementById("chatScreen");
+      messagesEl = document.getElementById("chatMessages");
+      inputEl = document.getElementById("chatInput");
+      sendBtn = document.getElementById("chatSendBtn");
+      backBtn = document.getElementById("chatBackBtn");
+      clearBtn = document.getElementById("chatClearBtn");
+      quickChipsEl = document.getElementById("chatQuickChips");
+
+      if (!fab || !screen) return;
+
+      // Drag events
+      fab.addEventListener("mousedown", onPointerDown);
+      fab.addEventListener("touchstart", onPointerDown, { passive: false });
+
+      // Screen controls
+      backBtn.addEventListener("click", close);
+      clearBtn.addEventListener("click", clearChat);
+      sendBtn.addEventListener("click", () => handleUserMessage(inputEl.value));
+      inputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          handleUserMessage(inputEl.value);
+        }
+      });
+
+      // Mobile keyboard: scroll input into view when focused
+      inputEl.addEventListener("focus", () => {
+        setTimeout(() => {
+          inputEl.scrollIntoView({ behavior: "smooth", block: "end" });
+        }, 300);
+      });
+
+      // VisualViewport resize for mobile keyboards
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", () => {
+          if (isOpen) {
+            screen.style.height = window.visualViewport.height + "px";
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+          }
+        });
+      }
+
+      // Update chips when navigation changes
+      const observer = new MutationObserver(() => {
+        if (isOpen) updateQuickChips();
+      });
+      const appContent = document.getElementById("appContent");
+      if (appContent) {
+        observer.observe(appContent, { childList: false, subtree: true, attributes: true, attributeFilter: ["hidden"] });
+      }
+    }
+
+    return { init, open, close, clearChat };
+  })();
+
+  // =========================================
+  //  18. BOOTSTRAP
   // =========================================
   document.addEventListener("DOMContentLoaded", () => {
     Clock.init();
@@ -1954,6 +2387,9 @@
     // Delayed chart init (after app transition)
     setTimeout(() => Dashboard.initCharts(), 5500);
 
+    // Init chatbot
+    ChatBot.init();
+
     // Expose globals for onclick handlers
     window.Dashboard = Dashboard;
     window.SessionController = SessionController;
@@ -1965,6 +2401,7 @@
     window.Reports = Reports;
     window.App = App;
     window.Toast = Toast;
+    window.ChatBot = ChatBot;
 
     console.log("🚀 EcoPower IoT Monitoring System — Engine Booted");
     console.log("📊 SimEngine running at 1.5s intervals");
