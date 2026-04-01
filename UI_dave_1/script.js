@@ -663,6 +663,7 @@
   };
 
   function chartOptions(yMax, showGrid = false) {
+    const isLight = document.documentElement.classList.contains("light-mode");
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -674,8 +675,8 @@
           display: showGrid,
           max: yMax,
           min: 0,
-          grid: { color: "rgba(255,255,255,0.04)" },
-          ticks: { color: "rgba(255,255,255,0.3)", font: { size: 9 } },
+          grid: { color: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.04)" },
+          ticks: { color: isLight ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.3)", font: { size: 9 } },
         },
       },
       animation: { duration: 0 },
@@ -1196,6 +1197,7 @@
       const ctx = document.getElementById("energyTrendChart");
       if (!ctx) return;
       if (this.chart) this.chart.destroy();
+      const isLight = document.documentElement.classList.contains("light-mode");
 
       const data = Array.from({ length: 7 }, () => Math.round(randomRange(80, 220)));
       this.chart = new Chart(ctx, {
@@ -1205,7 +1207,7 @@
           datasets: [{
             label: "Wh",
             data: data,
-            backgroundColor: "rgba(34, 197, 94, 0.3)",
+            backgroundColor: isLight ? "rgba(34, 197, 94, 0.2)" : "rgba(34, 197, 94, 0.3)",
             borderColor: "#22c55e",
             borderWidth: 1,
             borderRadius: 6,
@@ -1216,18 +1218,16 @@
           responsive: true, maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
-            tooltip: {
-              callbacks: { label: (ctx) => ctx.parsed.y + " Wh" },
-            },
+            tooltip: { callbacks: { label: (ctx) => ctx.parsed.y + " Wh" } },
           },
           scales: {
             y: {
-              grid: { color: "rgba(255,255,255,0.04)" },
-              ticks: { color: "rgba(255,255,255,0.3)", font: { size: 9 } },
+              grid: { color: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.04)" },
+              ticks: { color: isLight ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.3)", font: { size: 9 } },
             },
             x: {
               grid: { display: false },
-              ticks: { color: "rgba(255,255,255,0.4)", font: { size: 10, weight: "bold" } },
+              ticks: { color: isLight ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.4)", font: { size: 10, weight: "bold" } },
             },
           },
           animation: { duration: 800, easing: "easeOutQuart" },
@@ -1455,7 +1455,7 @@
               </span>
             </div>
           </div>
-          <i class="bi bi-chevron-right" style="color:rgba(255,255,255,0.15);"></i>
+          <i class="bi bi-chevron-right" style="color:var(--color-text-dim);"></i>
         </div>
       `).join("");
     },
@@ -1882,6 +1882,12 @@
         if (icon) icon.className = isLight ? "bi bi-sun-fill" : "bi bi-moon-fill";
         Toast.show(isLight ? "☀️ Light mode" : "🌙 Dark mode");
         haptic(5);
+
+        // Rebuild charts with correct theme colors
+        Object.values(Dashboard.charts).forEach(c => c && c.destroy());
+        Dashboard.charts = {};
+        Dashboard.initCharts();
+        if (Navigation.current === 2) Analytics.init();
       });
     },
   };
