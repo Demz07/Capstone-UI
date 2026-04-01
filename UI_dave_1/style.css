@@ -17,8 +17,8 @@
   --eco-mid: #408a71;
   --eco-light: #b0e4cc;
 
-  --phone-width: 390px;
-  --phone-height: 844px;
+  --phone-width: 412px;
+  --phone-height: 917px;
   --frame-padding: 12px;
   --border-radius-frame: 50px;
   --border-radius-screen: 40px;
@@ -262,6 +262,7 @@ body {
   position: relative;
   background: var(--color-surface);
   scrollbar-width: none;
+  padding-bottom: 100px; /* space for the floating nav */
 }
 
 .app-content::-webkit-scrollbar {
@@ -272,14 +273,17 @@ body {
            NAV BAR
            ========================================= */
 .nav-bar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
   height: 44px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
   padding-bottom: 8px;
-  background: var(--color-surface);
-  flex-shrink: 0;
-  z-index: 1001;
+  background: transparent;
+  pointer-events: none;
+  z-index: 1003;
 }
 
 .nav-pill {
@@ -292,91 +296,106 @@ body {
   cursor: default;
 }
 
-/* === Glassmorphism App Bottom Nav === */
+/* === Rectangular Glassmorphism Nav === */
 .app-nav {
-  height: 60px;
-  background: linear-gradient(170deg,
-      rgba(25, 35, 33, 0.5) 0%,
-      rgba(9, 20, 19, 0.85) 100%);
-  backdrop-filter: blur(25px) saturate(160%);
-  -webkit-backdrop-filter: blur(25px) saturate(160%);
-  border-top: 1px solid rgba(176, 228, 204, 0.12);
+  position: absolute;
+  bottom: 32px; /* moved up further */
+  left: 20px;
+  right: 20px;
+  height: 70px; /* refined height */
+  background: linear-gradient(180deg,
+      rgba(25, 35, 33, 0.8) 0%,
+      rgba(9, 20, 19, 0.6) 100%);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(176, 228, 204, 0.12); /* unified with header border style */
+  border-radius: 16px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0 8px;
-  flex-shrink: 0;
+  padding: 0 10px;
   z-index: 1002;
-  box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.4);
-  position: relative;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.4s ease;
+}
+
+.app-nav__indicator {
+  position: absolute;
+  top: 8px;
+  left: calc((100% - 20px) / 5 * var(--nav-idx, 0) + 10px);
+  width: calc((100% - 20px) / 5);
+  height: 54px;
+  background: rgba(176, 228, 204, 0.08); /* subtle matching indicator */
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  z-index: 0;
+  transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Energy line removed as requested */
+.app-nav__indicator-inner {
+  display: none;
 }
 
 .app-nav__item {
   position: relative;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.45);
-  gap: 6px;
-  transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
-  padding: 10px 14px;
-  border-radius: 16px;
-  min-width: 65px;
-}
-
-/* Active indicator glow line at bottom */
-.app-nav__item::before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%) scaleX(0);
-  width: 32px;
-  height: 3px;
-  background: var(--eco-light);
-  border-radius: 4px;
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow:
-    0 0 10px var(--eco-mid),
-    0 0 20px rgba(64, 138, 113, 0.4);
+  color: rgba(176, 228, 204, 0.4);
+  transition: all 0.4s ease;
+  z-index: 2;
+  height: 100%;
 }
 
 .app-nav__item i {
-  font-size: 20px;
-  transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+  font-size: 22px;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Pure centering in the item height */
+  margin-bottom: 0; 
 }
 
 .app-nav__item span {
-  font-size: 9px;
-  font-weight: 600;
+  font-size: 8px;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  opacity: 0.7;
-  transition: all 0.3s ease;
+  opacity: 0;
+  position: absolute;
+  bottom: 10px; /* Positioned absolute so icons stay dead-center */
+  transform: translateY(4px);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .app-nav__item--active {
   color: var(--eco-light);
 }
 
-.app-nav__item--active::before {
-  transform: translateX(-50%) scaleX(1);
-  opacity: 1;
-}
-
 .app-nav__item--active i {
-  transform: translateY(-4px);
-  color: #fff;
-  filter: drop-shadow(0 0 8px rgba(64, 138, 113, 0.8));
+  transform: translateY(-8px); /* slightly pushed up to peek above the indicator center */
+  filter: drop-shadow(0 0 12px rgba(176, 228, 204, 0.5));
 }
 
 .app-nav__item--active span {
-  opacity: 1;
   color: var(--eco-light);
-  transform: translateY(-2px);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Active State Pulse */
+.app-nav__item.is-animating .app-nav__indicator {
+  animation: navRectPulse 0.4s ease-out;
+}
+
+@keyframes navRectPulse {
+  0% { transform: scale(1); background-color: rgba(176, 228, 204, 0.1); }
+  50% { transform: scale(0.95); background-color: rgba(176, 228, 204, 0.2); }
+  100% { transform: scale(1); background-color: rgba(64, 138, 113, 0.25); }
 }
 
 .app-nav__item:active {
@@ -974,32 +993,67 @@ body {
 }
 
 .light-mode .app-nav {
-  background: linear-gradient(170deg, rgba(255, 255, 255, 0.75) 0%, rgba(245, 250, 248, 0.95) 100%);
+  background: rgba(255, 255, 255, 0.45);
   border-top: 1px solid rgba(64, 138, 113, 0.15);
-  box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.03);
 }
 
-.light-mode .app-nav__item {
-  color: rgba(9, 20, 19, 0.4);
+.light-mode .app-nav__indicator {
+  background: var(--color-surface);
+  border-color: rgba(64, 138, 113, 0.15);
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.05),
+    inset 0 1px 3px rgba(255, 255, 255, 0.8);
 }
 
-.light-mode .app-nav__item--active i,
+.light-mode .app-nav__indicator::before {
+  box-shadow: 
+    15px -15px 0 0 rgba(0, 0, 0, 0.02),
+    15px -15px 0 0 rgba(64, 138, 113, 0.05);
+}
+
+.light-mode .app-nav__indicator::after {
+  box-shadow: 
+    -15px -15px 0 0 rgba(0, 0, 0, 0.02),
+    -15px -15px 0 0 rgba(64, 138, 113, 0.05);
+}
+
+.light-mode .app-nav__item--active i {
+  background: linear-gradient(180deg, var(--eco-mid-dark) 0%, var(--eco-mid) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 .light-mode .app-nav__item--active span {
-  color: var(--eco-mid);
-  filter: none;
-  text-shadow: 0 0 10px rgba(64, 138, 113, 0.2);
-}
-
-.light-mode .app-nav__item::before {
-  box-shadow: 0 0 10px rgba(64, 138, 113, 0.5);
+  background: linear-gradient(180deg, var(--eco-mid-dark) 0%, var(--eco-mid) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .light-mode .in-progress__icon {
   color: var(--eco-mid);
 }
 
-.light-mode .in-progress__icon-wrap {
-  background: linear-gradient(135deg, rgba(64, 138, 113, 0.1), rgba(176, 228, 204, 0.2));
+.light-mode .app-nav__indicator,
+.light-mode .app-nav__indicator::before,
+.light-mode .app-nav__indicator::after {
+  background: transparent;
+}
+
+.light-mode .app-nav__indicator {
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 255, 255, 0.3) 100%);
+}
+
+.light-mode .app-nav__indicator::before {
+  box-shadow: 15px -15px 0 0 rgba(255, 255, 255, 0.6);
+}
+
+.light-mode .app-nav__indicator::after {
+  box-shadow: -15px -15px 0 0 rgba(255, 255, 255, 0.6);
 }
 
 .light-mode .auth-card {
@@ -1522,6 +1576,53 @@ body {
     transform: scale(0.85);
     transform-origin: top center;
   }
+}
+
+/* =========================================
+           DECORATIVE ELEMENTS FOR BLUR DEMO
+           ========================================= */
+.bg-decoration {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.2;
+  z-index: 0;
+  pointer-events: none;
+}
+.bg-decoration--1 {
+  top: 10%;
+  right: -50px;
+  background: var(--eco-light);
+}
+.bg-decoration--2 {
+  bottom: 20%;
+  left: -50px;
+  background: var(--eco-mid);
+}
+
+.dummy-card {
+  width: 100%;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dummy-card::after {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 50%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  box-shadow: 0 15px 0 0 rgba(255, 255, 255, 0.05);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -345,17 +345,31 @@
             if (!nav) return;
 
             const items = nav.querySelectorAll(".app-nav__item");
-            items.forEach((item) => {
+            items.forEach((item, index) => {
               item.addEventListener("click", (e) => {
                 e.preventDefault();
-                items.forEach((i) => i.classList.remove("app-nav__item--active"));
+                items.forEach((i) => {
+                  i.classList.remove("app-nav__item--active");
+                  i.classList.remove("is-animating");
+                });
                 item.classList.add("app-nav__item--active");
+                item.classList.add("is-animating");
+                nav.style.setProperty("--nav-idx", index);
+
+                // Remove animation class after it finishes
+                setTimeout(() => {
+                  item.classList.remove("is-animating");
+                }, 600);
 
                 if (window.navigator && window.navigator.vibrate) {
                   window.navigator.vibrate(5);
                 }
               });
             });
+            
+            // Set initial position
+            const activeIndex = Array.from(items).findIndex(i => i.classList.contains("app-nav__item--active"));
+            if(activeIndex > -1) nav.style.setProperty("--nav-idx", activeIndex);
           },
         };
 

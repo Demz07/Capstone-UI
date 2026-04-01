@@ -1,260 +1,281 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
-    <meta name="theme-color" content="#1a1a2e" />
-    <title>EcoPower – Android Prototype</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <title>EcoPower – Android Prototype</title>
 
-    <link rel="stylesheet" href="style.css" />
-  </head>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
-  <body>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-    <div class="phone-frame">
-      <div class="phone-screen">
-        <!-- Punch-hole camera -->
-        <div class="punch-hole" aria-hidden="true"></div>
+<body>
 
-        <!-- Status bar -->
-        <header class="status-bar">
-          <time class="status-time" id="statusTime" datetime="12:00"
-            >12:00</time
-          >
-          <div class="status-icons">
-            <div class="signal-bars">
-              <span class="bar" style="height: 3px"></span>
-              <span class="bar" style="height: 5px"></span>
-              <span class="bar" style="height: 8px"></span>
-              <span class="bar" style="height: 11px"></span>
-            </div>
-            <span class="material-icons" style="font-size: 16px">wifi</span>
-            <div class="battery-icon">
-              <div class="battery-body">
-                <div class="battery-level"></div>
-              </div>
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <!-- Punch-hole camera -->
+      <div class="punch-hole" aria-hidden="true"></div>
+
+      <!-- Status bar -->
+      <header class="status-bar">
+        <time class="status-time" id="statusTime" datetime="12:00">12:00</time>
+        <div class="status-icons">
+          <div class="signal-bars">
+            <span class="bar" style="height: 3px"></span>
+            <span class="bar" style="height: 5px"></span>
+            <span class="bar" style="height: 8px"></span>
+            <span class="bar" style="height: 11px"></span>
+          </div>
+          <span class="material-icons" style="font-size: 16px">wifi</span>
+          <div class="battery-icon">
+            <div class="battery-body">
+              <div class="battery-level"></div>
             </div>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <!-- Main content area -->
-        <main class="app-content" id="appContent">
-          <!-- ========== SPLASH SCREEN ========== -->
-          <div id="ecoSplash" class="eco-splash">
-            <div class="eco-splash__bg"></div>
+      <!-- Main content area -->
+      <main class="app-content" id="appContent">
+        <!-- ========== SPLASH SCREEN ========== -->
+        <div id="ecoSplash" class="eco-splash">
+          <div class="eco-splash__bg"></div>
 
-            <div class="eco-splash__content">
-              <!-- Logo -->
-              <div class="eco-splash__logo-wrapper">
-                <div class="eco-splash__glow-ring" id="splashGlow"></div>
-                <div class="eco-splash__logo" id="splashLogo">
-                  <!--
+          <div class="eco-splash__content">
+            <!-- Logo -->
+            <div class="eco-splash__logo-wrapper">
+              <div class="eco-splash__glow-ring" id="splashGlow"></div>
+              <div class="eco-splash__logo" id="splashLogo">
+                <!--
                                     ============================
                                     🔁 REPLACE src WITH YOUR LOGO
                                     ============================
                                 -->
-                  <img
-                    src="EcoPower_logo.png"
-                    alt="EcoPower"
-                    onerror="
+                <img src="EcoPower_logo.png" alt="EcoPower" onerror="
                       this.src =
                         'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22rgba(255,255,255,0.12)%22 stroke=%22rgba(255,255,255,0.2)%22 stroke-width=%221.5%22/><text x=%2250%22 y=%2256%22 text-anchor=%22middle%22 fill=%22rgba(255,255,255,0.5)%22 font-size=%2212%22 font-family=%22Poppins,sans-serif%22 font-weight=%22600%22>LOGO</text></svg>'
-                    "
-                  />
-                </div>
+                    " />
               </div>
-
-              <!-- Brand name -->
-              <div class="eco-splash__brand" id="splashBrand">
-                <div class="eco-splash__brand-name" id="splashBrandName"></div>
-              </div>
-
-              <!-- Tagline -->
-              <p class="eco-splash__tagline" id="splashTagline">
-                Powering a greener tomorrow
-              </p>
             </div>
 
-            <!-- Progress bar -->
-            <div class="eco-splash__progress" id="splashProgress">
-              <div
-                class="eco-splash__progress-bar"
-                id="splashProgressBar"
-              ></div>
+            <!-- Brand name -->
+            <div class="eco-splash__brand" id="splashBrand">
+              <div class="eco-splash__brand-name" id="splashBrandName"></div>
+            </div>
+
+            <!-- Tagline -->
+            <p class="eco-splash__tagline" id="splashTagline">
+              Powering a greener tomorrow
+            </p>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="eco-splash__progress" id="splashProgress">
+            <div class="eco-splash__progress-bar" id="splashProgressBar"></div>
+          </div>
+        </div>
+
+        <!-- ========== AUTH SCREEN ========== -->
+        <div id="authApp" class="auth-app" hidden>
+          <div class="auth-app__bg-wrap">
+            <img src="EcoPower_logo.png" alt="" class="auth-app__bg-logo" />
+          </div>
+
+          <!-- Default Login Card -->
+          <div class="auth-card" id="authLoginCard">
+            <div class="auth-card__header">
+              <img src="EcoPower_logo.png" alt="EcoPower Logo" class="auth-card__logo-icon auth-logo-glow"
+                onerror="this.style.display='none'" />
+              <h2 class="auth-card__title">Welcome Back</h2>
+              <p class="auth-card__subtitle">Log in to your account</p>
+            </div>
+
+            <form class="auth-form" onsubmit="event.preventDefault(); AuthScreen.login();">
+              <div class="auth-input-group">
+                <i class="bi bi-envelope"></i>
+                <input type="email" placeholder="Email Address" />
+              </div>
+              <div class="auth-input-group">
+                <i class="bi bi-lock"></i>
+                <input type="password" id="loginPassword" placeholder="Password" />
+                <button type="button" class="auth-toggle-pwd" onclick="AuthScreen.togglePassword('loginPassword')">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+              <div class="auth-actions">
+                <a href="#" class="auth-link">Forgot password?</a>
+              </div>
+              <button type="button" class="auth-btn" onclick="AuthScreen.login()">Log In</button>
+
+              <div class="auth-divider"><span>OR</span></div>
+
+              <button type="button" class="auth-btn auth-btn--google" onclick="AuthScreen.login()">
+                <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4" />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853" />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05" />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335" />
+                </svg>
+                Log in with Google
+              </button>
+            </form>
+
+            <div class="auth-footer">
+              <p>Don't have an account? <a href="#" class="auth-link auth-link--highlight"
+                  onclick="event.preventDefault(); AuthScreen.switchTab('signup');">Sign up</a></p>
             </div>
           </div>
 
-          <!-- ========== AUTH SCREEN ========== -->
-          <div id="authApp" class="auth-app" hidden>
-            <div class="auth-app__bg-wrap">
-              <img src="EcoPower_logo.png" alt="" class="auth-app__bg-logo" />
-            </div>
-            
-            <!-- Default Login Card -->
-            <div class="auth-card" id="authLoginCard">
-              <div class="auth-card__header">
-                <img src="EcoPower_logo.png" alt="EcoPower Logo" class="auth-card__logo-icon auth-logo-glow" onerror="this.style.display='none'" />
-                <h2 class="auth-card__title">Welcome Back</h2>
-                <p class="auth-card__subtitle">Log in to your account</p>
-              </div>
-              
-              <form class="auth-form" onsubmit="event.preventDefault(); AuthScreen.login();">
-                <div class="auth-input-group">
-                  <i class="bi bi-envelope"></i>
-                  <input type="email" placeholder="Email Address" />
-                </div>
-                <div class="auth-input-group">
-                  <i class="bi bi-lock"></i>
-                  <input type="password" id="loginPassword" placeholder="Password" />
-                  <button type="button" class="auth-toggle-pwd" onclick="AuthScreen.togglePassword('loginPassword')">
-                    <i class="bi bi-eye"></i>
-                  </button>
-                </div>
-                <div class="auth-actions">
-                  <a href="#" class="auth-link">Forgot password?</a>
-                </div>
-                <button type="button" class="auth-btn" onclick="AuthScreen.login()">Log In</button>
-                
-                <div class="auth-divider"><span>OR</span></div>
-                
-                <button type="button" class="auth-btn auth-btn--google" onclick="AuthScreen.login()">
-                  <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-                  Log in with Google
-                </button>
-              </form>
-              
-              <div class="auth-footer">
-                <p>Don't have an account? <a href="#" class="auth-link auth-link--highlight" onclick="event.preventDefault(); AuthScreen.switchTab('signup');">Sign up</a></p>
-              </div>
+          <!-- Signup Card -->
+          <div class="auth-card" id="authSignupCard" hidden>
+            <div class="auth-card__header">
+              <img src="EcoPower_logo.png" alt="EcoPower Logo" class="auth-card__logo-icon auth-logo-glow"
+                onerror="this.style.display='none'" />
+              <h2 class="auth-card__title">Create Account</h2>
+              <p class="auth-card__subtitle">Join EcoPower today</p>
             </div>
 
-            <!-- Signup Card -->
-            <div class="auth-card" id="authSignupCard" hidden>
-              <div class="auth-card__header">
-                <img src="EcoPower_logo.png" alt="EcoPower Logo" class="auth-card__logo-icon auth-logo-glow" onerror="this.style.display='none'" />
-                <h2 class="auth-card__title">Create Account</h2>
-                <p class="auth-card__subtitle">Join EcoPower today</p>
+            <form class="auth-form" onsubmit="event.preventDefault(); AuthScreen.showOtp();">
+              <div class="auth-input-group">
+                <i class="bi bi-person"></i>
+                <input type="text" placeholder="Full Name" />
               </div>
-              
-              <form class="auth-form" onsubmit="event.preventDefault(); AuthScreen.showOtp();">
-                <div class="auth-input-group">
-                  <i class="bi bi-person"></i>
-                  <input type="text" placeholder="Full Name" />
-                </div>
-                <div class="auth-input-group">
-                  <i class="bi bi-envelope"></i>
-                  <input type="email" id="signupEmail" placeholder="Email Address" />
-                </div>
-                <div class="auth-input-group">
-                  <i class="bi bi-lock"></i>
-                  <input type="password" id="signupPassword" placeholder="Create Password" />
-                  <button type="button" class="auth-toggle-pwd" onclick="AuthScreen.togglePassword('signupPassword')">
-                    <i class="bi bi-eye"></i>
-                  </button>
-                </div>
-                <button type="button" class="auth-btn" onclick="AuthScreen.showOtp()">Sign Up</button>
-                
-                <div class="auth-divider"><span>OR</span></div>
-                
-                <button type="button" class="auth-btn auth-btn--google" onclick="AuthScreen.showOtp()">
-                  <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-                  Sign up with Google
+              <div class="auth-input-group">
+                <i class="bi bi-envelope"></i>
+                <input type="email" id="signupEmail" placeholder="Email Address" />
+              </div>
+              <div class="auth-input-group">
+                <i class="bi bi-lock"></i>
+                <input type="password" id="signupPassword" placeholder="Create Password" />
+                <button type="button" class="auth-toggle-pwd" onclick="AuthScreen.togglePassword('signupPassword')">
+                  <i class="bi bi-eye"></i>
                 </button>
-              </form>
-              
-              <div class="auth-footer">
-                <p>Already have an account? <a href="#" class="auth-link auth-link--highlight" onclick="event.preventDefault(); AuthScreen.switchTab('login');">Log in</a></p>
               </div>
-            </div>
+              <button type="button" class="auth-btn" onclick="AuthScreen.showOtp()">Sign Up</button>
 
-            <!-- OTP Authentication Card -->
-            <div class="auth-card" id="authOtpCard" hidden>
-              <div class="auth-card__header">
-                <h2 class="auth-card__title">Verify Account</h2>
-                <p class="auth-card__subtitle">We've sent a 4-digit code to <strong id="verifyEmailDisplay" style="color: var(--color-text-primary);">your email</strong></p>
-              </div>
-              
-              <form class="auth-form" onsubmit="event.preventDefault(); AuthScreen.login();">
-                <div class="otp-inputs" id="otpContainer">
-                  <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
-                  <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
-                  <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
-                  <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
-                </div>
-                
-                <button type="submit" class="auth-btn" style="margin-top:24px;">Verify & Log In</button>
-              </form>
-              
-              <div class="auth-footer">
-                <p><a href="#" class="auth-link" onclick="event.preventDefault(); AuthScreen.hideOtp();">Cancel</a></p>
-              </div>
+              <div class="auth-divider"><span>OR</span></div>
+
+              <button type="button" class="auth-btn auth-btn--google" onclick="AuthScreen.showOtp()">
+                <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4" />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853" />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05" />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335" />
+                </svg>
+                Sign up with Google
+              </button>
+            </form>
+
+            <div class="auth-footer">
+              <p>Already have an account? <a href="#" class="auth-link auth-link--highlight"
+                  onclick="event.preventDefault(); AuthScreen.switchTab('login');">Log in</a></p>
             </div>
           </div>
 
-          <!-- ========== MAIN APP (shown after splash) ========== -->
-          <div id="mainApp" class="main-app" hidden>
-            <!-- App header -->
-            <div class="app-header">
-              <div class="app-header__left">
-                <img
-                  class="app-header__logo"
-                  style="width: 26px; height: 26px;"
-                  src="EcoPower_logo.png"
-                  alt=""
-                  onerror="
+          <!-- OTP Authentication Card -->
+          <div class="auth-card" id="authOtpCard" hidden>
+            <div class="auth-card__header">
+              <h2 class="auth-card__title">Verify Account</h2>
+              <p class="auth-card__subtitle">We've sent a 4-digit code to <strong id="verifyEmailDisplay"
+                  style="color: var(--color-text-primary);">your email</strong></p>
+            </div>
+
+            <form class="auth-form" onsubmit="event.preventDefault(); AuthScreen.login();">
+              <div class="otp-inputs" id="otpContainer">
+                <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
+                <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
+                <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
+                <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
+              </div>
+
+              <button type="submit" class="auth-btn" style="margin-top:24px;">Verify & Log In</button>
+            </form>
+
+            <div class="auth-footer">
+              <p><a href="#" class="auth-link" onclick="event.preventDefault(); AuthScreen.hideOtp();">Cancel</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== MAIN APP (shown after splash) ========== -->
+        <div id="mainApp" class="main-app" hidden>
+          <!-- App header -->
+          <div class="app-header">
+            <div class="app-header__left">
+              <img class="app-header__logo" style="width: 26px; height: 26px;" src="EcoPower_logo.png" alt="" onerror="
                     this.src =
                       'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22rgba(64,138,113,0.2)%22/><text x=%2250%22 y=%2258%22 text-anchor=%22middle%22 fill=%22%23408A71%22 font-size=%2216%22 font-family=%22Poppins%22 font-weight=%22800%22>E</text></svg>'
-                  "
-                />
-                <h1 class="app-header__title" style="font-family: 'Poppins', sans-serif; font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 0;">EcoPower</h1>
-              </div>
-              
-              <div class="app-header__right">
-                <button class="app-header__icon-btn" id="themeToggle" aria-label="Toggle Theme">
-                  <i class="bi bi-moon-fill" id="themeIcon"></i>
-                </button>
-                <div class="app-header__profile-wrap" style="position: relative;">
-                  <div class="app-header__profile" id="profileBtn">
-                    <i class="bi bi-person-fill"></i>
-                  </div>
-                  <!-- Profile Dropdown -->
-                  <div class="profile-dropdown" id="profileDropdown" hidden>
-                    <button class="profile-dropdown__btn" onclick="AuthScreen.showLogoutModal(event)">
-                      <i class="bi bi-box-arrow-right"></i> Log Out
-                    </button>
-                  </div>
+                  " />
+              <h1 class="app-header__title"
+                style="font-family: 'Poppins', sans-serif; font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 0;">
+                EcoPower</h1>
+            </div>
+
+            <div class="app-header__right">
+              <button class="app-header__icon-btn" id="themeToggle" aria-label="Toggle Theme">
+                <i class="bi bi-moon-fill" id="themeIcon"></i>
+              </button>
+              <div class="app-header__profile-wrap" style="position: relative;">
+                <div class="app-header__profile" id="profileBtn">
+                  <i class="bi bi-person-fill"></i>
+                </div>
+                <!-- Profile Dropdown -->
+                <div class="profile-dropdown" id="profileDropdown" hidden>
+                  <button class="profile-dropdown__btn" onclick="AuthScreen.showLogoutModal(event)">
+                    <i class="bi bi-box-arrow-right"></i> Log Out
+                  </button>
                 </div>
               </div>
             </div>
+          </div>
+
+            <!-- Decorative background elements for blur demo -->
+            <div class="bg-decoration bg-decoration--1"></div>
+            <div class="bg-decoration bg-decoration--2"></div>
 
             <!-- In Progress content -->
             <div class="in-progress">
               <div class="in-progress__icon-wrap">
                 <span class="material-icons in-progress__icon">eco</span>
               </div>
-              <h2 class="in-progress__title">In Progress</h2>
+              <h2 class="in-progress__title">Welcome to EcoPower</h2>
               <p class="in-progress__subtitle">
-                We're building something amazing.<br />
-                This app is currently under development.
+                Your sustainable energy journey starts here.<br />
+                Scroll down to see the glass effect.
               </p>
+              
+              <!-- Dummy content to enable scrolling for blur demo -->
+              <div class="dummy-card"></div>
+              <div class="dummy-card"></div>
+              <div class="dummy-card"></div>
+              <div class="dummy-card"></div>
+              <div class="dummy-card"></div>
+
               <div class="in-progress__dots">
                 <div class="in-progress__dot"></div>
                 <div class="in-progress__dot"></div>
@@ -262,52 +283,58 @@
               </div>
             </div>
 
-            <!-- App Bottom Navigation -->
-            <nav class="app-nav">
-              <a href="#" class="app-nav__item app-nav__item--active">
-                <i class="bi bi-grid-fill"></i>
-                <span>Dashboard</span>
-              </a>
-              <a href="#" class="app-nav__item">
-                <i class="bi bi-graph-up"></i>
-                <span>Analytics</span>
-              </a>
-              <a href="#" class="app-nav__item">
-                <i class="bi bi-cpu-fill"></i>
-                <span>Control</span>
-              </a>
-              <a href="#" class="app-nav__item">
-                <i class="bi bi-bell-fill"></i>
-                <span>Alerts</span>
-              </a>
-              <a href="#" class="app-nav__item">
-                <i class="bi bi-file-earmark-bar-graph-fill"></i>
-                <span>Reports</span>
-              </a>
-            </nav>
+          <!-- App Bottom Navigation -->
+          <nav class="app-nav">
+            <div class="app-nav__indicator" id="navIndicator">
+              <div class="app-nav__indicator-inner"></div>
+            </div>
+            <a href="#" class="app-nav__item app-nav__item--active">
+              <i class="bi bi-grid-fill"></i>
+              <span>Dashboard</span>
+            </a>
+            <a href="#" class="app-nav__item">
+              <i class="bi bi-graph-up"></i>
+              <span>Analytics</span>
+            </a>
+            <a href="#" class="app-nav__item">
+              <i class="bi bi-cpu-fill"></i>
+              <span>Control</span>
+            </a>
+            <a href="#" class="app-nav__item">
+              <i class="bi bi-bell-fill"></i>
+              <span>Alerts</span>
+            </a>
+            <a href="#" class="app-nav__item">
+              <i class="bi bi-file-earmark-bar-graph-fill"></i>
+              <span>Reports</span>
+            </a>
+          </nav>
 
-            <!-- ========== LOGOUT CONFIRMATION MODAL ========== -->
-            <div id="logoutModal" class="app-modal" hidden>
-              <div class="app-modal__overlay" onclick="AuthScreen.hideLogoutModal()"></div>
-              <div class="app-modal__content">
-                <h3 class="app-modal__title">Log Out</h3>
-                <p class="app-modal__desc">Are you sure you want to log out?</p>
-                <div class="app-modal__actions">
-                  <button class="app-modal__btn app-modal__btn--cancel" onclick="AuthScreen.hideLogoutModal()">Cancel</button>
-                  <button class="app-modal__btn app-modal__btn--danger" onclick="AuthScreen.executeLogout()">Log Out</button>
-                </div>
+          <!-- ========== LOGOUT CONFIRMATION MODAL ========== -->
+          <div id="logoutModal" class="app-modal" hidden>
+            <div class="app-modal__overlay" onclick="AuthScreen.hideLogoutModal()"></div>
+            <div class="app-modal__content">
+              <h3 class="app-modal__title">Log Out</h3>
+              <p class="app-modal__desc">Are you sure you want to log out?</p>
+              <div class="app-modal__actions">
+                <button class="app-modal__btn app-modal__btn--cancel"
+                  onclick="AuthScreen.hideLogoutModal()">Cancel</button>
+                <button class="app-modal__btn app-modal__btn--danger" onclick="AuthScreen.executeLogout()">Log
+                  Out</button>
               </div>
             </div>
           </div>
-        </main>
+        </div>
+      </main>
 
-        <!-- Navigation bar -->
-        <nav class="nav-bar">
-          <button class="nav-pill" type="button" aria-label="Home"></button>
-        </nav>
-      </div>
+      <!-- Navigation bar -->
+      <nav class="nav-bar">
+        <button class="nav-pill" type="button" aria-label="Home"></button>
+      </nav>
     </div>
+  </div>
 
-    <script src="script.js"></script>
-  </body>
+  <script src="script.js"></script>
+</body>
+
 </html>
