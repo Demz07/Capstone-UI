@@ -495,6 +495,12 @@
                       </button>
                     </div>
 
+                    <!-- Current Status Summary -->
+                    <div class="air-quality-summary">
+                      <span class="summary-label">Current Status:</span>
+                      <span class="summary-value" id="airQualityStatus">Loading...</span>
+                    </div>
+
                     <!-- Legend -->
                     <div class="chart-legend-row">
                       <div class="legend-item"><span class="dot dot--red"></span> Raw Smoke (PPM)</div>
@@ -502,7 +508,7 @@
                     </div>
 
                     <!-- Dual Line Graph -->
-                    <div class="chart-container" style="height: 112px;">
+                    <div class="chart-container" style="height: 140px;">
                       <canvas id="filtrationChart"></canvas>
                     </div>
 
@@ -560,6 +566,26 @@
                           </div>
                         </div>
                         <span id="status-filtered-air" class="badge badge--green">GOOD</span>
+                      </div>
+                    </div>
+
+                    <!-- Quick Stats Row -->
+                    <div class="quick-stats-row">
+                      <div class="quick-stat-item">
+                        <span class="quick-stat-label">PM2.5</span>
+                        <span class="quick-stat-value" id="stat-pm25">--</span>
+                      </div>
+                      <div class="quick-stat-item">
+                        <span class="quick-stat-label">Humidity</span>
+                        <span class="quick-stat-value" id="stat-humidity">--</span>
+                      </div>
+                      <div class="quick-stat-item">
+                        <span class="quick-stat-label">Temp</span>
+                        <span class="quick-stat-value" id="stat-temp">--</span>
+                      </div>
+                      <div class="quick-stat-item">
+                        <span class="quick-stat-label">Updated</span>
+                        <span class="quick-stat-value" id="stat-updated">--</span>
                       </div>
                     </div>
 

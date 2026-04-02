@@ -354,6 +354,25 @@
 
       this.setAQIStatus("status-raw-smoke", d.aqiRaw, "ppm");
       this.setAQIStatus("status-filtered-air", d.aqiFiltered, "aqi");
+
+      const summaryEl = document.getElementById("airQualityStatus");
+      if (summaryEl) {
+        const aqi = d.aqiFiltered;
+        let statusText, statusClass;
+        if (aqi <= 50) { statusText = "GOOD"; statusClass = "status-good"; }
+        else if (aqi <= 100) { statusText = "MODERATE"; statusClass = "status-moderate"; }
+        else if (aqi <= 150) { statusText = "UNHEALTHY"; statusClass = "status-unhealthy"; }
+        else { statusText = "HAZARDOUS"; statusClass = "status-hazardous"; }
+        summaryEl.textContent = statusText;
+        summaryEl.className = "summary-value " + statusClass;
+      }
+
+      UI.text("stat-pm25", Math.round(d.aqiRaw * 0.12));
+      const hum = Math.round(40 + Math.random() * 20);
+      UI.text("stat-humidity", hum + "%");
+      const tempF = Math.round(68 + Math.random() * 10);
+      UI.text("stat-temp", tempF + "°F");
+      UI.text("stat-updated", "now");
     },
 
     setAQIStatus(id, val, type) {
@@ -638,13 +657,13 @@
               fill: true, tension: 0.4, pointRadius: 0, borderWidth: 1.5,
             },
           ];
-          yMax = 500;
+          yMax = 1000;
         }
 
         this.sensorChart = new Chart(ctx, {
           type: "line",
           data: { labels: Array(30).fill(""), datasets },
-          options: chartOptions(yMax),
+          options: chartOptions(yMax, false, type === "air"),
         });
       }, 100);
     },
@@ -671,7 +690,7 @@
     },
   };
 
-  function chartOptions(yMax, showGrid = false) {
+  function chartOptions(yMax, showGrid = false, showYAxis = false) {
     const isLight = document.documentElement.classList.contains("light-mode");
     return {
       responsive: true,
@@ -681,11 +700,15 @@
       scales: {
         x: { display: false },
         y: {
-          display: showGrid,
+          display: showYAxis,
           max: yMax,
           min: 0,
-          grid: { color: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.04)" },
-          ticks: { color: isLight ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.3)", font: { size: 9 } },
+          grid: { display: showGrid, color: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.04)" },
+          ticks: { 
+            color: isLight ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.4)", 
+            font: { size: 10, weight: 500 },
+            stepSize: showYAxis ? yMax / 4 : undefined,
+          },
         },
       },
       animation: { duration: 0 },
@@ -722,7 +745,7 @@
               },
             ],
           },
-          options: chartOptions(500),
+          options: chartOptions(1000, false, true),
         });
       }
 
