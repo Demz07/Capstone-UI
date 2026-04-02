@@ -79,8 +79,10 @@
           <!-- Login Card -->
           <div class="auth-card" id="authLoginCard">
             <div class="auth-card__header">
-              <img src="EcoPower_logo.png" alt="EcoPower Logo" class="auth-card__logo-icon auth-logo-glow"
-                onerror="this.style.display='none'" />
+              <div class="auth-card__logo-wrap">
+                <img src="EcoPower_logo.png" alt="EcoPower Logo" class="auth-card__logo-icon"
+                  onerror="this.style.display='none'" />
+              </div>
               <h2 class="auth-card__title">Welcome Back</h2>
               <p class="auth-card__subtitle">Log in to your account</p>
             </div>
@@ -92,9 +94,9 @@
               <div class="auth-input-group">
                 <i class="bi bi-lock"></i>
                 <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" />
-                <button type="button" class="auth-toggle-pwd" onclick="AuthScreen.togglePassword('loginPassword')">
+                <span class="auth-toggle-pwd" onclick="AuthScreen.togglePassword('loginPassword')">
                   <i class="bi bi-eye"></i>
-                </button>
+                </span>
               </div>
               <div class="auth-actions">
                 <a href="#" class="auth-link" onclick="event.preventDefault()">Forgot password?</a>
@@ -128,8 +130,10 @@
           <!-- Signup Card -->
           <div class="auth-card" id="authSignupCard" hidden>
             <div class="auth-card__header">
-              <img src="EcoPower_logo.png" alt="EcoPower Logo" class="auth-card__logo-icon auth-logo-glow"
-                onerror="this.style.display='none'" />
+              <div class="auth-card__logo-wrap">
+                <img src="EcoPower_logo.png" alt="EcoPower Logo" class="auth-card__logo-icon"
+                  onerror="this.style.display='none'" />
+              </div>
               <h2 class="auth-card__title">Create Account</h2>
               <p class="auth-card__subtitle">Join EcoPower today</p>
             </div>
@@ -145,9 +149,9 @@
               <div class="auth-input-group">
                 <i class="bi bi-lock"></i>
                 <input type="password" id="signupPassword" placeholder="Create Password" autocomplete="new-password" />
-                <button type="button" class="auth-toggle-pwd" onclick="AuthScreen.togglePassword('signupPassword')">
+                <span class="auth-toggle-pwd" onclick="AuthScreen.togglePassword('signupPassword')">
                   <i class="bi bi-eye"></i>
-                </button>
+                </span>
               </div>
               <button type="submit" class="auth-btn">Sign Up</button>
               <div class="auth-divider"><span>OR</span></div>
@@ -188,6 +192,8 @@
                 <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
                 <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
                 <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
+                <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
+                <input type="tel" class="otp-box" maxlength="1" autocomplete="off" />
               </div>
               <button type="submit" class="auth-btn" style="margin-top:24px;">Verify & Log In</button>
             </form>
@@ -202,7 +208,7 @@
           <!-- App Header -->
           <div class="app-header">
             <div class="app-header__left">
-              <img class="app-header__logo" style="width: 26px; height: 26px;" src="EcoPower_logo.png" alt="EcoPower"
+              <img class="app-header__logo" src="EcoPower_logo.png" alt="EcoPower"
                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22rgba(64,138,113,0.2)%22/><text x=%2250%22 y=%2258%22 text-anchor=%22middle%22 fill=%22%23408A71%22 font-size=%2216%22 font-family=%22Poppins%22 font-weight=%22800%22>E</text></svg>'" />
               <h1 class="app-header__title">EcoPower</h1>
             </div>
