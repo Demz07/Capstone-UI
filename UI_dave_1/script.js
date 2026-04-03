@@ -1857,11 +1857,11 @@
         mainApp.classList.remove("main-app--visible");
         setTimeout(() => {
           mainApp.hidden = true;
-          const auth = document.getElementById("authApp");
-          if (auth) {
-            auth.hidden = false;
-            void auth.offsetWidth;
-            auth.classList.add("auth-app--visible");
+          const roleSelection = document.getElementById("roleSelection");
+          if (roleSelection) {
+            roleSelection.hidden = false;
+            void roleSelection.offsetWidth;
+            roleSelection.classList.add("role-selection--visible");
           }
         }, 500);
       }
@@ -1926,6 +1926,15 @@
       input.type = isPassword ? "text" : "password";
       const btn = input.parentElement.querySelector(".auth-toggle-pwd i");
       if (btn) btn.className = isPassword ? "bi bi-eye-slash" : "bi bi-eye";
+    },
+
+    show() {
+      const auth = document.getElementById("authApp");
+      if (auth) {
+        auth.hidden = false;
+        void auth.offsetWidth;
+        auth.classList.add("auth-app--visible");
+      }
     },
 
     showLogoutModal(e) {
@@ -2037,11 +2046,30 @@
     hideSplash() {
       const { splash, auth } = this.els;
       if (splash) splash.classList.add("eco-splash--hidden");
-      if (auth) {
-        auth.hidden = false;
-        void auth.offsetWidth;
-        auth.classList.add("auth-app--visible");
+      const roleSelection = document.getElementById("roleSelection");
+      if (roleSelection) {
+        roleSelection.hidden = false;
+        void roleSelection.offsetWidth;
+        roleSelection.classList.add("role-selection--visible");
       }
+    },
+  };
+
+  // =========================================
+  //  ROLE SELECTION
+  // =========================================
+  window.RoleSelection = {
+    selectRole(role) {
+      haptic(8);
+      const roleSelection = document.getElementById("roleSelection");
+      if (roleSelection) roleSelection.classList.remove("role-selection--visible");
+      
+      setTimeout(() => {
+        roleSelection.hidden = true;
+        AuthScreen.show();
+      }, 300);
+      
+      console.log("Role selected:", role);
     },
   };
 

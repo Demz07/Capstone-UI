@@ -78,6 +78,46 @@
           </div>
         </div>
 
+        <!-- ========== ROLE SELECTION SCREEN ========== -->
+        <div id="roleSelection" class="role-selection" hidden>
+          <div class="role-selection__header">
+            <div class="role-selection__logo-wrap">
+              <img src="EcoPower_logo.png" alt="EcoPower Logo" class="role-selection__logo-icon"
+                onerror="this.style.display='none'" />
+            </div>
+            <h2 class="role-selection__title">Select Your Role</h2>
+            <p class="role-selection__subtitle">Choose how you want to continue</p>
+          </div>
+
+          <div class="role-cards">
+            <div class="role-card tappable" onclick="RoleSelection.selectRole('operator')">
+              <div class="role-card__icon">
+                <i class="bi bi-person-badge"></i>
+              </div>
+              <div class="role-card__content">
+                <h3 class="role-card__title">Operator</h3>
+                <p class="role-card__desc">Manage waste processing sessions and monitor system</p>
+              </div>
+              <div class="role-card__arrow">
+                <i class="bi bi-chevron-right"></i>
+              </div>
+            </div>
+
+            <div class="role-card tappable" onclick="RoleSelection.selectRole('captain')">
+              <div class="role-card__icon role-card__icon--captain">
+                <i class="bi bi-person-badge-fill"></i>
+              </div>
+              <div class="role-card__content">
+                <h3 class="role-card__title">Barangay Captain</h3>
+                <p class="role-card__desc">Oversee operations and view analytics reports</p>
+              </div>
+              <div class="role-card__arrow">
+                <i class="bi bi-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- ========== AUTH SCREEN ========== -->
         <div id="authApp" class="auth-app" hidden>
           <div class="auth-app__bg-wrap">
@@ -1289,17 +1329,18 @@
           <!-- Logout Modal -->
           <div id="logoutModal" class="app-modal" hidden>
             <div class="app-modal__overlay" onclick="AuthScreen.hideLogoutModal()"></div>
-            <div class="app-modal__content">
-              <div class="modal-icon-wrap modal-icon-wrap--danger">
-                <i class="bi bi-box-arrow-right"></i>
+            <div class="app-modal__content logout-modal-content">
+              <div class="logout-modal__text">
+                <h3 class="logout-modal__title">Log Out</h3>
+                <p class="logout-modal__desc">Are you sure you want to log out?</p>
               </div>
-              <h3 class="app-modal__title">Log Out</h3>
-              <p class="app-modal__desc">Are you sure you want to log out of EcoPower?</p>
-              <div class="app-modal__actions">
-                <button class="app-modal__btn app-modal__btn--cancel"
+              <div class="logout-modal__actions">
+                <button class="logout-modal__btn logout-modal__btn--cancel"
                   onclick="AuthScreen.hideLogoutModal()">Cancel</button>
-                <button class="app-modal__btn app-modal__btn--danger" onclick="AuthScreen.executeLogout()">Log
-                  Out</button>
+                <button class="logout-modal__btn logout-modal__btn--confirm"
+                  onclick="AuthScreen.executeLogout()">
+                  <i class="bi bi-box-arrow-right"></i> Log Out
+                </button>
               </div>
             </div>
           </div>
