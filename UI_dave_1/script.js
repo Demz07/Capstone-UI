@@ -503,7 +503,12 @@
   function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
   function randomRange(min, max) { return Math.random() * (max - min) + min; }
 
+  let userInteracted = false;
+  document.addEventListener("click", () => userInteracted = true, { once: true });
+  document.addEventListener("touchstart", () => userInteracted = true, { once: true });
+
   function haptic(pattern) {
+    if (!userInteracted) return;
     try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) { }
   }
 
