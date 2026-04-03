@@ -6257,6 +6257,32 @@ body {
   background: rgba(0, 0, 0, 0.25);
 }
 
+.light-mode .app-modal__content {
+  background: linear-gradient(135deg, rgba(230, 240, 235, 0.98), rgba(255, 255, 255, 0.95));
+  border-color: rgba(64, 138, 113, 0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+}
+
+.light-mode .app-modal__title,
+.light-mode .logout-modal__title {
+  color: #091413;
+}
+
+.light-mode .logout-modal__desc {
+  color: rgba(9, 20, 19, 0.5);
+}
+
+.light-mode .logout-modal__btn--cancel {
+  background: #f1f5f3;
+  color: #091414;
+  border-color: rgba(0, 0, 0, 0.05);
+  box-shadow: none;
+}
+
+.light-mode .modal-header__left i {
+  color: var(--eco-mid);
+}
+
 .light-mode .modal-pull-indicator {
   background: rgba(0, 0, 0, 0.1);
 }
