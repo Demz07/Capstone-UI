@@ -649,13 +649,13 @@ body {
 .app-nav__indicator {
   position: absolute;
   top: 8px;
-  left: calc((100% - 20px) / 5 * var(--nav-idx, 0) + 10px);
-  width: calc((100% - 20px) / 5);
+  left: calc((100% - 20px) / var(--nav-count, 5) * var(--nav-idx, 0) + 10px);
+  width: calc((100% - 20px) / var(--nav-count, 5));
   height: 54px;
   background: rgba(176, 228, 204, 0.08);
   border-radius: 12px;
   z-index: 0;
-  transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.5s ease;
 }
 
 .app-nav__indicator-inner {

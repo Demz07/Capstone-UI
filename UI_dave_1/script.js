@@ -2,6 +2,12 @@
   "use strict";
 
   // =========================================
+  //  0. GLOBAL APP STATE
+  // =========================================
+  const AppState = {
+    userRole: "operator", // Default to operator
+  };
+
   //  1. SIMULATION ENGINE — Real-Time Data
   // =========================================
   const SimEngine = {
@@ -556,16 +562,40 @@
 
     switchScreen(idx) {
       if (idx === this.current && idx !== 1) return;
+      
+      const role = AppState.userRole;
+      const isCaptain = (role === "captain");
+      if (isCaptain && ![1, 2, 5].includes(idx)) {
+        console.warn("Access denied for Barangay Captain role.");
+        return;
+      }
+
       this.current = idx;
 
       // Nav visuals
       const navItems = document.querySelectorAll(".app-nav__item");
-      navItems.forEach((item, i) => {
-        item.classList.toggle("app-nav__item--active", i === idx - 1);
-      });
-      document.querySelector(".app-nav").style.setProperty("--nav-idx", idx - 1);
+      let visualIdx = 0;
+      let visibleCount = 0;
 
-      // Screens
+      navItems.forEach((item, i) => {
+        const itemIdx = i + 1;
+        const isSelected = itemIdx === idx;
+        const isVisible = item.style.display !== "none";
+        
+        item.classList.toggle("app-nav__item--active", isSelected);
+        
+        if (isVisible) {
+          if (isSelected) visualIdx = visibleCount;
+          visibleCount++;
+        }
+      });
+
+      const nav = document.querySelector(".app-nav");
+      if (nav) {
+        nav.style.setProperty("--nav-idx", visualIdx);
+        nav.style.setProperty("--nav-count", visibleCount);
+      }
+
       this.screens.forEach((id, i) => {
         UI.visible("screen-" + id, i + 1 === idx);
       });
@@ -1845,6 +1875,10 @@
         void mainApp.offsetWidth;
         mainApp.classList.add("main-app--visible");
       }
+      
+      // Apply Role Restrictions
+      RoleManager.apply();
+
       Navigation.switchScreen(1);
       Dashboard.initCharts();
       Toast.show("👋 Welcome to EcoPower!");
@@ -1950,6 +1984,8 @@
 
     executeLogout() {
       this.hideLogoutModal();
+      // Reset role restrictions
+      RoleManager.reset();
       setTimeout(() => this.logout(), 300);
       Toast.show("Logged out successfully");
     },
@@ -2056,11 +2092,79 @@
   };
 
   // =========================================
+  //  ROLE MANAGER
+  // =========================================
+  const RoleManager = {
+    apply() {
+      const role = AppState.userRole;
+      const isCaptain = (role === "captain");
+      
+      console.log("Applying restrictions for role:", role);
+
+      // 1. Navigation items
+      const navItems = document.querySelectorAll(".app-nav__item");
+      navItems.forEach((item) => {
+        const screenIdx = parseInt(item.getAttribute("data-screen"));
+        // Dashboard(1), Analytics(2), Reports(5) allowed for Captain
+        // Operator has all: 1, 2, 3(Control), 4(Alerts), 5
+        const allowed = !isCaptain || [1, 2, 5].includes(screenIdx);
+        item.style.display = allowed ? "flex" : "none";
+      });
+
+      // 2. Dashboard restrictions for Captain
+      const sessionStatusCard = document.getElementById("sessionStatusCard");
+      if (sessionStatusCard) {
+        const sessionSection = sessionStatusCard.closest(".dashboard-section");
+        if (sessionSection) sessionSection.style.display = isCaptain ? "none" : "block";
+      }
+
+      // Hide active session data (Reactor/AQI/Power cards) on Dashboard if any
+      const activeSessionData = document.getElementById("activeSessionData");
+      if (activeSessionData) {
+        // Captain never sees control-related real-time cards on dashboard
+        if (isCaptain) activeSessionData.style.display = "none";
+      }
+
+      // Update initial navigation layout
+      Navigation.switchScreen(1);
+
+      ChatBot.setRole(role);
+      
+      // Update header title if Captain
+      const headerTitle = document.querySelector(".header-title");
+      if (headerTitle) {
+        headerTitle.textContent = isCaptain ? "EcoPower Overseer" : "EcoPower Dashboard";
+      }
+    },
+
+    reset() {
+      const navItems = document.querySelectorAll(".app-nav__item");
+      navItems.forEach(i => i.style.display = "flex");
+      
+      const sessionStatusCard = document.getElementById("sessionStatusCard");
+      if (sessionStatusCard) {
+        const sessionSection = sessionStatusCard.closest(".dashboard-section");
+        if (sessionSection) sessionSection.style.display = "block";
+      }
+
+      const activeSessionData = document.getElementById("activeSessionData");
+      if (activeSessionData) activeSessionData.style.display = "none"; // Hidden by default anyway
+      
+      const headerTitle = document.querySelector(".header-title");
+      if (headerTitle) {
+        headerTitle.textContent = "EcoPower Dashboard";
+      }
+    }
+  };
+
+  // =========================================
   //  ROLE SELECTION
   // =========================================
   window.RoleSelection = {
     selectRole(role) {
       haptic(8);
+      AppState.userRole = role; // Store the selected role
+      
       const roleSelection = document.getElementById("roleSelection");
       if (roleSelection) roleSelection.classList.remove("role-selection--visible");
       
@@ -2156,6 +2260,7 @@
     let quickChipsEl;
     let isOpen = false;
     let isTyping = false;
+    let currentRole = "operator";
 
     // Drag state
     let isDragging = false;
@@ -2305,7 +2410,31 @@
         id: "help",
         keywords: ["help", "what can you do", "commands", "options", "capabilities"],
         response: () => ({
-          text: "I can help with: Battery status, Reactor temperature, Power output, Air quality, Session progress, ESP32 connection, Report summaries, Optimization tips. Just ask!"
+          text: currentRole === "captain" 
+            ? "As Barangay Captain, I can help you with: Waste management policies, Recycling tips, Machine overviews, and System analytics. Type 'recycling' or 'machine' to learn more!"
+            : "I can help with: Battery status, Reactor temperature, Power output, Air quality, Session progress, ESP32 connection, Report summaries, Optimization tips. Just ask!"
+        })
+      },
+      // CAPTAIN SPECIFIC INTENTS
+      {
+        id: "waste_mgmt_tips",
+        keywords: ["recycling", "proper waste", "management", "resident", "citizen"],
+        response: () => ({
+          text: "Proper waste management starts at source! Encourage residents to: 1) Separate organic from non-organic, 2) Keep organic waste dry for EcoPower processing, 3) Avoid putting plastic in the biomass reactor. Dry organic waste increases energy yield by up to 40%!"
+        })
+      },
+      {
+        id: "machine_info",
+        keywords: ["the machine", "how it works", "eco power machine", "technology"],
+        response: () => ({
+          text: "The EcoPower machine uses advanced Thermoelectric Generators (TEG) to convert waste heat into electricity. It performs controlled biomass burning with high-efficiency smoke filtration to ensure near-zero air pollution while powering the barangay's local grid."
+        })
+      },
+      {
+        id: "community_impact",
+        keywords: ["impact", "benefit", "barangay", "residents"],
+        response: () => ({
+          text: "EcoPower reduces local landfill waste by up to 85% and provides sustainable energy for streetlights and charging stations. It also prevents significant CO2 emissions by controlled burning instead of open-pit fires."
         })
       }
     ];
@@ -2315,7 +2444,9 @@
       "screen-analytics": ["Best waste grade?", "Energy trend?", "AI prediction?"],
       "screen-control": ["How to start session?", "ESP32 status", "Fan control help"],
       "screen-alerts": ["Explain latest alert", "How to fix this?", "Clear all alerts"],
-      "screen-reports": ["Session summary", "Best session", "Export report"]
+      "screen-reports": ["Session summary", "Best session", "Export report"],
+      // Role specific chips
+      "captain": ["Recycling tips", "Machine info", "Community impact", "System stats"]
     };
 
     function getTimestamp() {
@@ -2381,7 +2512,13 @@
     function updateQuickChips() {
       const activeScreen = document.querySelector(".screen-content:not([hidden])");
       const screenId = activeScreen ? activeScreen.id : "screen-dashboard";
-      const chips = quickChips[screenId] || quickChips["screen-dashboard"];
+      
+      let chips = [];
+      if (currentRole === "captain") {
+        chips = quickChips["captain"];
+      } else {
+        chips = quickChips[screenId] || quickChips["screen-dashboard"];
+      }
 
       quickChipsEl.innerHTML = "";
       chips.forEach(chipText => {
@@ -2566,13 +2703,18 @@
       const observer = new MutationObserver(() => {
         if (isOpen) updateQuickChips();
       });
-      const appContent = document.getElementById("appContent");
+      const appContent = document.getElementById("mainAppContent");
       if (appContent) {
         observer.observe(appContent, { childList: false, subtree: true, attributes: true, attributeFilter: ["hidden"] });
       }
     }
 
-    return { init, open, close, clearChat };
+    function setRole(role) {
+      currentRole = role;
+      if (isOpen) updateQuickChips();
+    }
+
+    return { init, open, close, clearChat, setRole };
   })();
 
   // =========================================
