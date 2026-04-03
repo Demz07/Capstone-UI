@@ -956,6 +956,7 @@
     state: {
       currentStep: 0,
       currentPhase: "IDLE",
+      canGoBack: false,
     },
     weightInterval: null,
 
@@ -1016,6 +1017,24 @@
       UI.text("step2-initial", w.toFixed(1) + " kg");
       Toast.show("✅ Weight confirmed: " + w.toFixed(2) + " kg");
       haptic(20);
+
+      this.state.canGoBack = true;
+      UI.visible("btn-back-to-step1", true);
+    },
+
+    goBackToStep1() {
+      if (this.state.currentStep >= 3) {
+        Toast.show("⚠️ Cannot go back after ignition");
+        return;
+      }
+      this.state.currentStep = 1;
+      this.state.currentPhase = "LOADING";
+      this.state.canGoBack = false;
+      UI.visible("btn-back-to-step1", false);
+      this.showStep(1);
+      this.simulateWeightDetection();
+      Toast.show("↩️ Returned to Step 1");
+      haptic([30, 20, 30]);
     },
 
     proceedToStep3() {
