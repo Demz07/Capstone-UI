@@ -1106,7 +1106,7 @@
       wasteTypeEl.textContent = "Analyzing...";
       wasteTypeEl.classList.remove("result");
       
-      const wasteTypes = ["Paper", "Plastic", "Mixed"];
+      const wasteTypes = ["Paper", "Plastic", "Mixed (Plastic & Paper)"];
       
       setTimeout(() => {
         const randomType = wasteTypes[Math.floor(Math.random() * wasteTypes.length)];
@@ -1115,7 +1115,7 @@
           wasteTypeEl.classList.add("result");
         }
         SimEngine.data.wasteType = randomType;
-      }, 5000);
+      }, 3000); // 3 seconds is enough for processing effect
     },
 
     checkBurnComplete() {
@@ -1206,7 +1206,7 @@
         grade: grade,
         energy: energy,
         waste: wasteKg,
-        wasteType: d.wasteType || "Mixed",
+        wasteType: d.wasteType || "Mixed (Plastic & Paper)",
         temp: Math.round(850 + Math.random() * 100),
         smokeBefore: Math.round(350 + Math.random() * 200),
         smokeAfter: Math.round(20 + Math.random() * 40),
@@ -1224,6 +1224,7 @@
       d.wasteRemaining = 0;
       d.wasteBurned = 0;
       d.energyAccumulated = 0;
+      d.wasteType = null;
 
       UI.visible("panel-welcome", true);
       UI.visible("panel-stepper", false);
@@ -1413,14 +1414,21 @@
         wasteTypeCounts[type] = (wasteTypeCounts[type] || 0) + 1;
       });
       
-      let predictedType = types[Math.floor(Math.random() * types.length)];
-      let maxCount = 0;
+      // Better tie-breaking for predictions: pick randomly if counts are equal
+      let maxCount = -1;
+      let topTypes = [];
       for (const type in wasteTypeCounts) {
         if (wasteTypeCounts[type] > maxCount) {
           maxCount = wasteTypeCounts[type];
-          predictedType = type;
+          topTypes = [type];
+        } else if (wasteTypeCounts[type] === maxCount) {
+          topTypes.push(type);
         }
       }
+      
+      let predictedType = topTypes.length > 0
+        ? topTypes[Math.floor(Math.random() * topTypes.length)]
+        : types[Math.floor(Math.random() * types.length)];
       
       const times = [35, 40, 45, 50, 55, 60];
       const avgEnergy = Reports.data.length > 0 
@@ -1570,10 +1578,10 @@
     data: [
       { id: "EP-4210", date: "Mar 29, 2026", grade: "A", energy: 42, waste: "2.4", wasteType: "Paper", temp: 860, smokeBefore: 420, smokeAfter: 38 },
       { id: "EP-4209", date: "Mar 29, 2026", grade: "B", energy: 35, waste: "1.8", wasteType: "Plastic", temp: 780, smokeBefore: 380, smokeAfter: 45 },
-      { id: "EP-4208", date: "Mar 28, 2026", grade: "A", energy: 45, waste: "2.5", wasteType: "Mixed", temp: 890, smokeBefore: 450, smokeAfter: 32 },
+      { id: "EP-4208", date: "Mar 28, 2026", grade: "A", energy: 45, waste: "2.5", wasteType: "Mixed (Plastic & Paper)", temp: 890, smokeBefore: 450, smokeAfter: 32 },
       { id: "EP-4207", date: "Mar 28, 2026", grade: "C", energy: 18, waste: "1.2", wasteType: "Plastic", temp: 650, smokeBefore: 550, smokeAfter: 62 },
       { id: "EP-4206", date: "Mar 27, 2026", grade: "A", energy: 48, waste: "2.6", wasteType: "Paper", temp: 910, smokeBefore: 400, smokeAfter: 28 },
-      { id: "EP-4205", date: "Mar 27, 2026", grade: "B", energy: 30, waste: "1.5", wasteType: "Mixed", temp: 740, smokeBefore: 360, smokeAfter: 50 },
+      { id: "EP-4205", date: "Mar 27, 2026", grade: "B", energy: 30, waste: "1.5", wasteType: "Mixed (Plastic & Paper)", temp: 740, smokeBefore: 360, smokeAfter: 50 },
     ],
     filteredData: [],
     searchQuery: "",
