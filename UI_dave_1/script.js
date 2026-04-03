@@ -2111,18 +2111,23 @@
         item.style.display = allowed ? "flex" : "none";
       });
 
-      // 2. Dashboard restrictions for Captain
+      // 2. Dashboard restrictions for Captain (Session card)
       const sessionStatusCard = document.getElementById("sessionStatusCard");
       if (sessionStatusCard) {
         const sessionSection = sessionStatusCard.closest(".dashboard-section");
         if (sessionSection) sessionSection.style.display = isCaptain ? "none" : "block";
       }
 
-      // Hide active session data (Reactor/AQI/Power cards) on Dashboard if any
+      // 3. Dashboard restrictions for Captain (Real-time cards)
       const activeSessionData = document.getElementById("activeSessionData");
-      if (activeSessionData) {
-        // Captain never sees control-related real-time cards on dashboard
-        if (isCaptain) activeSessionData.style.display = "none";
+      if (activeSessionData && isCaptain) {
+        activeSessionData.style.display = "none";
+      }
+
+      // 4. Notification Button
+      const notificationBtn = document.getElementById("notificationBtn");
+      if (notificationBtn) {
+        notificationBtn.style.display = isCaptain ? "none" : "flex";
       }
 
       // Update initial navigation layout
@@ -2149,6 +2154,9 @@
 
       const activeSessionData = document.getElementById("activeSessionData");
       if (activeSessionData) activeSessionData.style.display = "none"; // Hidden by default anyway
+      
+      const notificationBtn = document.getElementById("notificationBtn");
+      if (notificationBtn) notificationBtn.style.display = "flex";
       
       const headerTitle = document.querySelector(".header-title");
       if (headerTitle) {
