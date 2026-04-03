@@ -2541,7 +2541,48 @@
       setTimeout(() => {
         hideTyping();
         const intent = matchIntent(text);
-        const response = getResponse(intent, SimEngine.state);
+
+        // Construct the unified state object the chatbot's intents expect
+        const d = SimEngine.data;
+        const s = SessionController.state;
+        const state = {
+          battery: {
+            pct: Math.round(d.batteryInternal),
+            charging: d.batteryInternalTrend === "charging",
+            discharging: d.batteryInternalTrend === "draining",
+            voltage: d.voltageInternal
+          },
+          reactor: {
+            temp: Math.round(d.reactorTemp)
+          },
+          power: d.powerOutput,
+          air: {
+            raw: Math.round(d.aqiRaw),
+            filtered: Math.round(d.aqiFiltered)
+          },
+          session: {
+            active: s.currentPhase !== "IDLE" && s.currentPhase !== "DONE",
+            phase: ["IDLE", "LOADING", "HEATING", "BURNING", "COOLING", "DONE"].indexOf(s.currentPhase) - 1
+          },
+          alerts: AlertSystem.alerts || [],
+          esp32: {
+            online: d.espOnline,
+            ip: "192.168.1.25",
+            latency: d.espLatency,
+            signal: 4
+          },
+          fan: {
+            mode: d.fanMode
+          },
+          stats: {
+            sessions: d.sessionsTotal,
+            energy: d.energyToday + 156,
+            waste: d.totalWasteProcessed,
+            co2: d.co2Prevented
+          }
+        };
+
+        const response = getResponse(intent, state);
         renderMessage(response.text, "bot");
         updateQuickChips();
       }, 600);
