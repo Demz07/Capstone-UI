@@ -60,8 +60,122 @@
   --transition-smooth: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+
+/* =========================================
+   SUPER SMOOTH THEME TRANSITION
+   Applied only to structural/cosmetic elements.
+   Buttons, nav items, and interactive controls
+   are intentionally excluded so their snappy
+   hover/active responses remain unaffected.
+   ========================================= */
+html.theme-transitioning .phone-screen,
+html.theme-transitioning .phone-frame,
+html.theme-transitioning .app-content,
+html.theme-transitioning .app-header,
+html.theme-transitioning .main-app,
+html.theme-transitioning .main-app__content,
+html.theme-transitioning .glass-card,
+html.theme-transitioning .stat-card,
+html.theme-transitioning .status-bar,
+html.theme-transitioning .status-bar .status-time,
+html.theme-transitioning .status-bar .signal-bars .bar,
+html.theme-transitioning .status-bar .battery-body,
+html.theme-transitioning .status-bar .battery-level,
+html.theme-transitioning .status-bar .material-icons,
+html.theme-transitioning .app-screen,
+html.theme-transitioning .dashboard-section,
+html.theme-transitioning .section-title,
+html.theme-transitioning .card-title,
+html.theme-transitioning .card-header,
+html.theme-transitioning .tiny-label,
+html.theme-transitioning .stat-label,
+html.theme-transitioning .stat-value,
+html.theme-transitioning .stat-unit,
+html.theme-transitioning .battery-item,
+html.theme-transitioning .battery-visual,
+html.theme-transitioning .battery-border,
+html.theme-transitioning .battery-fill,
+html.theme-transitioning .battery-metrics,
+html.theme-transitioning .battery-percent,
+html.theme-transitioning .phase-circle,
+html.theme-transitioning .phase-label,
+html.theme-transitioning .phase-connector,
+html.theme-transitioning .progress-container,
+html.theme-transitioning .gauge-bg,
+html.theme-transitioning .gauge-value-wrap,
+html.theme-transitioning .gauge-bar-wrapper,
+html.theme-transitioning .gauge-number,
+html.theme-transitioning .gauge-unit,
+html.theme-transitioning .info-box,
+html.theme-transitioning .conn-meta,
+html.theme-transitioning .conn-info,
+html.theme-transitioning .conn-label,
+html.theme-transitioning .waste-stat-box,
+html.theme-transitioning .energy-drawn-box,
+html.theme-transitioning .comparison-card,
+html.theme-transitioning .pred-item,
+html.theme-transitioning .report-item,
+html.theme-transitioning .alert-card,
+html.theme-transitioning .quick-stats-row,
+html.theme-transitioning .quick-stat-item,
+html.theme-transitioning .aqi-legend,
+html.theme-transitioning .air-quality-summary,
+html.theme-transitioning .hint-text,
+html.theme-transitioning .profile-dropdown,
+html.theme-transitioning .profile-dropdown__header,
+html.theme-transitioning .profile-dropdown__name,
+html.theme-transitioning .profile-dropdown__email,
+html.theme-transitioning .profile-dropdown__divider,
+html.theme-transitioning .search-bar,
+html.theme-transitioning .search-bar input,
+html.theme-transitioning .glass-pill-select,
+html.theme-transitioning .chat-msg,
+html.theme-transitioning .chat-msg--bot,
+html.theme-transitioning .chat-screen-footer,
+html.theme-transitioning .chat-screen-input,
+html.theme-transitioning .app-modal__content,
+html.theme-transitioning .app-modal__title,
+html.theme-transitioning .app-modal__overlay,
+html.theme-transitioning .modal-pull-indicator,
+html.theme-transitioning .step-circle,
+html.theme-transitioning .step-icon-wrap,
+html.theme-transitioning .stepper-progress-bg,
+html.theme-transitioning .dist-bar-bg,
+html.theme-transitioning .horizontal-progress,
+html.theme-transitioning .reports-filter-card,
+html.theme-transitioning .reports-stat,
+html.theme-transitioning .summ-item,
+html.theme-transitioning .detail-section,
+html.theme-transitioning .auth-app,
+html.theme-transitioning .auth-card,
+html.theme-transitioning .auth-card__logo-wrap,
+html.theme-transitioning .auth-card__title,
+html.theme-transitioning .auth-card__subtitle,
+html.theme-transitioning .auth-input-group,
+html.theme-transitioning .auth-input-group input,
+html.theme-transitioning .auth-input-group i,
+html.theme-transitioning .auth-btn,
+html.theme-transitioning .auth-btn--google,
+html.theme-transitioning .auth-divider,
+html.theme-transitioning .auth-toggle-pwd,
+html.theme-transitioning .auth-footer,
+html.theme-transitioning .auth-footer .auth-link,
+html.theme-transitioning .otp-box,
+html.theme-transitioning .auth-logo-glow,
+html.theme-transitioning body {
+  transition:
+    background-color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    text-shadow 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-delay: 0s !important;
+}
+
 /* === LIGHT MODE === */
 .light-mode {
+  --color-frame: #0a0a0a;
   --color-screen: #ffffff;
   --color-surface: #f4f7f6;
   --color-surface-2: rgba(0, 0, 0, 0.035);
@@ -78,7 +192,49 @@
   --shadow-neumorph-inset:
     inset 4px 4px 8px rgba(166, 166, 166, 0.35),
     inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+  /* Keep phone frame border dark in light mode */
+  --shadow-frame:
+    0 0 0 2px #333,
+    0 0 0 4px #1a1a1a,
+    0 0 0 6px #333,
+    0 30px 60px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(0, 0, 0, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.03);
 }
+
+/* === AUTH SCREENS — Always dark, never affected by light mode === */
+.light-mode .auth-app {
+  --color-surface: #0a0f0e;
+  --color-surface-2: rgba(255, 255, 255, 0.03);
+  --color-surface-3: rgba(255, 255, 255, 0.06);
+  --color-text-primary: #fff;
+  --color-text-secondary: rgba(255, 255, 255, 0.6);
+  --color-text-dim: rgba(255, 255, 255, 0.2);
+  --color-border-card: rgba(255, 255, 255, 0.08);
+  --color-border-subtle: #333;
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --shadow-neumorph:
+    10px 10px 20px rgba(0, 0, 0, 0.35),
+    -10px -10px 20px rgba(255, 255, 255, 0.03);
+  --shadow-neumorph-inset:
+    inset 6px 6px 12px rgba(0, 0, 0, 0.3),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.02);
+  background: #0a0f0e;
+}
+
+/* Status bar always dark when auth screens are visible */
+.light-mode .phone-screen:has(.auth-app:not([hidden])) .status-bar,
+.light-mode .phone-screen:has(.auth-app.auth-app--visible) .status-bar {
+  --color-text-primary: #fff;
+  background: #0a0f0e;
+  z-index: 1001;
+}
+
+/* Ensure status bar icons are black in rest of UI when in light mode */
+.light-mode .status-bar {
+  --color-text-primary: #000;
+}
+
 
 body {
   font-family: "Nunito", "Segoe UI", system-ui, sans-serif;
@@ -5475,137 +5631,6 @@ body {
   border-color: rgba(0, 0, 0, 0.06);
 }
 
-.light-mode .auth-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.85), rgba(244, 247, 246, 0.75));
-  border-color: rgba(64, 138, 113, 0.12);
-  box-shadow:
-    8px 8px 16px rgba(166, 166, 166, 0.4),
-    -6px -6px 12px rgba(255, 255, 255, 0.8);
-}
-
-.light-mode .auth-card__logo-wrap {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
-
-.light-mode .auth-card__title {
-  color: var(--color-text-primary);
-  text-shadow: none;
-}
-
-.light-mode .auth-app__bg-logo {
-  filter: brightness(0);
-  opacity: 0.03;
-}
-
-.light-mode .auth-input-group {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(244, 247, 246, 0.6));
-  box-shadow:
-    inset 3px 3px 6px rgba(166, 166, 166, 0.25),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.7);
-}
-
-.light-mode .auth-input-group:focus-within {
-  box-shadow:
-    inset 4px 4px 8px rgba(166, 166, 166, 0.3),
-    inset -2px -2px 6px rgba(255, 255, 255, 0.8),
-    0 0 0 2px rgba(64, 138, 113, 0.2);
-}
-
-.light-mode .auth-input-group i {
-  color: rgba(64, 138, 113, 0.5);
-}
-
-.light-mode .auth-input-group input {
-  color: var(--color-text-primary);
-}
-
-.light-mode .auth-input-group input::placeholder {
-  color: rgba(64, 138, 113, 0.3);
-}
-
-.light-mode .auth-toggle-pwd {
-  background: transparent;
-  border: none;
-  color: rgba(64, 138, 113, 0.4);
-  box-shadow: none;
-}
-
-.light-mode .auth-toggle-pwd:hover {
-  color: rgba(64, 138, 113, 0.8);
-}
-
-.light-mode .auth-toggle-pwd:active {
-  color: var(--eco-mid);
-}
-
-.light-mode .auth-divider {
-  color: rgba(0, 0, 0, 0.25);
-}
-
-.light-mode .auth-divider::before,
-.light-mode .auth-divider::after {
-  border-bottom-color: rgba(0, 0, 0, 0.1);
-}
-
-.light-mode .auth-btn--google {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(244, 247, 246, 0.7));
-  border-color: rgba(64, 138, 113, 0.15);
-  color: var(--color-text-primary);
-  box-shadow:
-    5px 5px 10px rgba(166, 166, 166, 0.35),
-    -3px -3px 8px rgba(255, 255, 255, 0.8);
-}
-
-.light-mode .auth-btn--google:active {
-  box-shadow:
-    inset 3px 3px 6px rgba(166, 166, 166, 0.35),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.7);
-}
-
-.light-mode .otp-box {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.75), rgba(244, 247, 246, 0.65));
-  color: var(--color-text-primary);
-  border-color: rgba(64, 138, 113, 0.15);
-  box-shadow:
-    4px 4px 8px rgba(166, 166, 166, 0.35),
-    -3px -3px 6px rgba(255, 255, 255, 0.8);
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-}
-
-.light-mode .otp-box:focus {
-  box-shadow:
-    4px 4px 8px rgba(166, 166, 166, 0.35),
-    -3px -3px 6px rgba(255, 255, 255, 0.8),
-    0 0 0 3px rgba(64, 138, 113, 0.2);
-}
-
-.light-mode .otp-box:active {
-  box-shadow:
-    inset 3px 3px 6px rgba(166, 166, 166, 0.35),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.7);
-}
-
-.light-mode .auth-logo-glow {
-  animation: loginLogoGlowLight 3s ease-in-out infinite;
-}
-
-@keyframes loginLogoGlowLight {
-
-  0%,
-  100% {
-    filter: drop-shadow(0 0 8px rgba(64, 138, 113, 0.2)) brightness(0);
-  }
-
-  50% {
-    filter: drop-shadow(0 0 15px rgba(64, 138, 113, 0.5)) brightness(0);
-    transform: scale(1.04);
-  }
-}
-
 .light-mode .search-bar input {
   color: var(--color-text-primary);
 }
@@ -5928,10 +5953,7 @@ body {
   background: #fff;
 }
 
-/* -- Auth Screen -- */
-.light-mode .auth-app {
-  background: var(--color-surface);
-}
+
 
 /* -- Phase Indicator Visibility Fixes -- */
 .light-mode .phase-label {
@@ -5974,9 +5996,7 @@ body {
   color: rgba(0, 0, 0, 0.4);
 }
 
-.light-mode .phone-frame::after {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
-}
+
 
 /* =========================================
    RESPONSIVE

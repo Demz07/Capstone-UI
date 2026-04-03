@@ -1913,6 +1913,8 @@
       const btn = document.getElementById("themeToggle");
       if (!btn) return;
       btn.addEventListener("click", () => {
+        document.documentElement.classList.add("theme-transitioning");
+        
         document.documentElement.classList.toggle("light-mode");
         const isLight = document.documentElement.classList.contains("light-mode");
         const icon = document.getElementById("themeIcon");
@@ -1925,6 +1927,10 @@
         Dashboard.charts = {};
         Dashboard.initCharts();
         if (Navigation.current === 2) Analytics.init();
+        
+        setTimeout(() => {
+          document.documentElement.classList.remove("theme-transitioning");
+        }, 600);
       });
     },
   };
