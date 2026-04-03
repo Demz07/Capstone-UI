@@ -957,6 +957,7 @@
       currentStep: 0,
       currentPhase: "IDLE",
       canGoBack: false,
+      sessionLocked: false,
     },
     weightInterval: null,
 
@@ -1023,6 +1024,10 @@
     },
 
     goBackToStep1() {
+      if (this.state.sessionLocked) {
+        Toast.show("🔒 Session locked - Cannot add waste during burning");
+        return;
+      }
       if (this.state.currentStep >= 3) {
         Toast.show("⚠️ Cannot go back after ignition");
         return;
@@ -1044,8 +1049,12 @@
       }
       this.state.currentStep = 3;
       this.state.currentPhase = "BURNING";
+      this.state.canGoBack = false;
+      this.state.sessionLocked = true;
+      UI.visible("btn-back-to-step1", false);
       this.showStep(3);
       Dashboard.updateDashboardSessionUI();
+      UI.visible("session-lock-indicator", true);
       Toast.show("🔥 Ignition! Burning in progress...");
       haptic([100, 50, 100]);
     },
@@ -1079,6 +1088,8 @@
           clearInterval(interval);
           this.state.currentStep = 5;
           this.state.currentPhase = "DONE";
+          this.state.sessionLocked = false;
+          UI.visible("session-lock-indicator", false);
           this.showStep(5);
           Dashboard.updateDashboardSessionUI();
           SimEngine.stopSessionTimer();
@@ -1171,6 +1182,19 @@
       const d = SimEngine.data;
       if (this.state.currentStep === 2) {
         UI.text("current-temp-step2", Math.round(d.reactorTemp) + "°C");
+        
+        if (Math.round(d.reactorTemp) === 40) {
+          Toast.show("Temperature reached 40°C - Auto-advancing to Burning!");
+          this.state.currentStep = 3;
+          this.state.currentPhase = "BURNING";
+          this.state.canGoBack = false;
+          UI.visible("btn-back-to-step1", false);
+          this.showStep(3);
+          Dashboard.updateDashboardSessionUI();
+          haptic([100, 50, 100]);
+          return;
+        }
+        
         const ready = d.reactorTemp >= 300;
         const btn = document.getElementById("btn-ignite");
         if (btn) {

@@ -3525,6 +3525,20 @@ body {
   animation: textPulse 2s infinite;
 }
 
+.session-lock-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
 @keyframes textPulse {
 
   0%,
