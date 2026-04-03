@@ -416,6 +416,28 @@
                       View Details <i class="bi bi-arrow-right"></i>
                     </button>
                   </div>
+
+                  <!-- Session Summary (shown after each session) -->
+                  <div id="session-summary-dashboard" class="session-summary-dashboard" hidden>
+                    <div class="summary-stats-grid">
+                      <div class="summary-stat-item">
+                        <span class="tiny-label">WEIGHT</span>
+                        <span id="dash-summary-weight" class="summary-stat-value">-- kg</span>
+                      </div>
+                      <div class="summary-stat-item">
+                        <span class="tiny-label">ENERGY</span>
+                        <span id="dash-summary-energy" class="summary-stat-value eco-text">-- Wh</span>
+                      </div>
+                      <div class="summary-stat-item">
+                        <span class="tiny-label">BURNED</span>
+                        <span id="dash-summary-burned" class="summary-stat-value orange-text">-- kg</span>
+                      </div>
+                      <div class="summary-stat-item">
+                        <span class="tiny-label">TYPE</span>
+                        <span id="dash-summary-type" class="summary-stat-value">--</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </section>
 
@@ -656,7 +678,7 @@
                       onclick="Dashboard.setChargingFilter('month', this)">Month</button>
                   </div>
                   <div class="energy-drawn-box">
-                    <span class="tiny-label">ENERGY GENERATED</span>
+                    <span class="tiny-label">ENERGY DISTRIBUTED</span>
                     <span id="charging-energy-val" class="energy-value font-mono">0.0</span>
                     <span class="unit-label">Watt-hours (Wh)</span>
                   </div>
@@ -911,24 +933,28 @@
                       <i class="bi bi-lightning-charge-fill pulse-icon"></i>
                       <span>TEG Generating Power</span>
                     </div>
-                    <div class="burn-grid">
-                      <div class="burn-sub-card">
-                        <span class="tiny-label">TEMP</span>
-                        <span id="step3-temp" class="burn-val orange-text font-mono">--°C</span>
+                      <div class="burn-grid">
+                        <div class="burn-sub-card">
+                          <span class="tiny-label">TEMP</span>
+                          <span id="step3-temp" class="burn-val orange-text font-mono">--°C</span>
+                        </div>
+                        <div class="burn-sub-card">
+                          <span class="tiny-label">WEIGHT</span>
+                          <span id="step3-current" class="burn-val font-mono">--g</span>
+                        </div>
+                        <div class="burn-sub-card">
+                          <span class="tiny-label">POWER</span>
+                          <span id="step3-power" class="burn-val eco-text font-mono">--W</span>
+                        </div>
+                        <div class="burn-sub-card">
+                          <span class="tiny-label">BATTERY</span>
+                          <span id="step3-battery" class="burn-val font-mono">--%</span>
+                        </div>
                       </div>
-                      <div class="burn-sub-card">
-                        <span class="tiny-label">WEIGHT</span>
-                        <span id="step3-current" class="burn-val font-mono">--g</span>
+                      <div class="waste-type-display">
+                        <span class="tiny-label">WASTE TYPE</span>
+                        <div class="waste-type-value" id="waste-type-value">Analyzing...</div>
                       </div>
-                      <div class="burn-sub-card">
-                        <span class="tiny-label">POWER</span>
-                        <span id="step3-power" class="burn-val eco-text font-mono">--W</span>
-                      </div>
-                      <div class="burn-sub-card">
-                        <span class="tiny-label">BATTERY</span>
-                        <span id="step3-battery" class="burn-val font-mono">--%</span>
-                      </div>
-                    </div>
                     <div class="burn-progress-section">
                       <div class="burn-progress-header">
                         <span class="tiny-label">BURN PROGRESS</span>
@@ -1001,6 +1027,10 @@
                       <span class="tiny-label">CO₂ PREVENTED</span>
                       <span id="summary-co2" class="co2-value font-mono eco-text">0.00 kg</span>
                     </div>
+                    <div class="co2-display">
+                      <span class="tiny-label">WASTE TYPE</span>
+                      <span id="summary-waste-type" class="co2-value font-mono eco-text">--</span>
+                    </div>
                     <button class="btn-primary" onclick="SessionController.finishSession()">
                       <i class="bi bi-arrow-clockwise"></i> SAVE & FINISH
                     </button>
@@ -1034,22 +1064,51 @@
                   </div>
                 </div>
 
-                <!-- Exhaust Fan -->
+                <!-- Filtration Fan -->
                 <div class="glass-card hardware-card">
                   <div class="hardware-card__header">
                     <div class="icon-box icon-box--blue"><i class="bi bi-fan"></i></div>
                     <div class="hardware-title-group">
-                      <span class="hardware-title">Exhaust Fan</span>
+                      <span class="hardware-title">Filtration Fan</span>
                       <div class="hardware-status">
-                        <span id="fan-dot" class="status-dot status-dot--gray"></span>
-                        <span id="fan-text" class="status-text">Stopped</span>
+                        <span id="fan1-dot" class="status-dot status-dot--gray"></span>
+                        <span id="fan1-text" class="status-text">Stopped</span>
                       </div>
                     </div>
                   </div>
+                  <div class="fan-speed-control">
+                    <input type="range" id="fan1-slider" class="fan-speed-slider" min="0" max="100" value="0" 
+                      oninput="FanControl.setSpeed(this.value)">
+                    <span id="fan1-speed" class="fan-speed-value">0%</span>
+                  </div>
                   <div class="control-actions">
-                    <button id="fan-auto" class="control-pill active" onclick="FanControl.setMode('auto')">Auto</button>
-                    <button id="fan-on" class="control-pill" onclick="FanControl.setMode('on')">On</button>
-                    <button id="fan-off" class="control-pill" onclick="FanControl.setMode('off')">Off</button>
+                    <button id="fan1-auto" class="control-pill active" onclick="FanControl.setMode('auto')">Auto</button>
+                    <button id="fan1-on" class="control-pill" onclick="FanControl.setMode('on')">On</button>
+                    <button id="fan1-off" class="control-pill" onclick="FanControl.setMode('off')">Off</button>
+                  </div>
+                </div>
+
+                <!-- TEG Fan -->
+                <div class="glass-card hardware-card">
+                  <div class="hardware-card__header">
+                    <div class="icon-box icon-box--green"><i class="bi bi-fan"></i></div>
+                    <div class="hardware-title-group">
+                      <span class="hardware-title">TEG Fan</span>
+                      <div class="hardware-status">
+                        <span id="fan2-dot" class="status-dot status-dot--gray"></span>
+                        <span id="fan2-text" class="status-text">Stopped</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="fan-speed-control">
+                    <input type="range" id="fan2-slider" class="fan-speed-slider" min="0" max="100" value="0" 
+                      oninput="Fan2Control.setSpeed(this.value)">
+                    <span id="fan2-speed" class="fan-speed-value">0%</span>
+                  </div>
+                  <div class="control-actions">
+                    <button id="fan2-auto" class="control-pill active" onclick="Fan2Control.setMode('auto')">Auto</button>
+                    <button id="fan2-on" class="control-pill" onclick="Fan2Control.setMode('on')">On</button>
+                    <button id="fan2-off" class="control-pill" onclick="Fan2Control.setMode('off')">Off</button>
                   </div>
                 </div>
 

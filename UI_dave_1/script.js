@@ -19,6 +19,7 @@
       batterySecondaryTrend: "standby",
 
       reactorTemp: 25.0,
+      reactorPhase: "IDLE",
       wasteInitial: 0,
       wasteRemaining: 0,
       wasteBurned: 0,
@@ -126,7 +127,9 @@
 
     updateReactor(phase) {
       const d = this.data;
-      switch (phase) {
+      const effectivePhase = phase || d.reactorPhase || "IDLE";
+      
+      switch (effectivePhase) {
         case "IDLE":
         case "DONE":
           d.reactorTemp = Math.max(25, d.reactorTemp - randomRange(0.3, 0.8));
@@ -964,12 +967,15 @@
     startSession() {
       this.state.currentStep = 1;
       this.state.currentPhase = "LOADING";
+      SimEngine.data.reactorPhase = "LOADING";
       UI.visible("panel-welcome", false);
       UI.visible("panel-stepper", true);
+      UI.visible("session-summary-dashboard", false);
       this.showStep(1);
       SimEngine.startSessionTimer();
       Dashboard.updateDashboardSessionUI();
       this.simulateWeightDetection();
+      SimEngine.data.wasteType = null;
       Toast.show("🔥 Session started — Add waste to reactor");
       haptic([50, 30, 50]);
     },
@@ -1012,6 +1018,7 @@
 
       this.state.currentStep = 2;
       this.state.currentPhase = "HEATING";
+      SimEngine.data.reactorPhase = "HEATING";
       this.showStep(2);
       Dashboard.updateDashboardSessionUI();
 
@@ -1034,6 +1041,7 @@
       }
       this.state.currentStep = 1;
       this.state.currentPhase = "LOADING";
+      SimEngine.data.reactorPhase = "LOADING";
       this.state.canGoBack = false;
       UI.visible("btn-back-to-step1", false);
       this.showStep(1);
@@ -1043,8 +1051,8 @@
     },
 
     proceedToStep3() {
-      if (SimEngine.data.reactorTemp < 300) {
-        Toast.show("⚠️ Wait for 300°C before igniting");
+      if (SimEngine.data.reactorTemp < 40) {
+        Toast.show("⚠️ Wait for 40°C before igniting");
         return;
       }
       this.state.currentStep = 3;
@@ -1055,8 +1063,29 @@
       this.showStep(3);
       Dashboard.updateDashboardSessionUI();
       UI.visible("session-lock-indicator", true);
+      this.startWasteClassification();
+      SimEngine.data.reactorPhase = "BURNING";
       Toast.show("🔥 Ignition! Burning in progress...");
       haptic([100, 50, 100]);
+    },
+
+    startWasteClassification() {
+      const wasteTypeEl = document.getElementById("waste-type-value");
+      if (!wasteTypeEl) return;
+      
+      wasteTypeEl.textContent = "Analyzing...";
+      wasteTypeEl.classList.remove("result");
+      
+      const wasteTypes = ["Paper", "Plastic", "Mixed"];
+      
+      setTimeout(() => {
+        const randomType = wasteTypes[Math.floor(Math.random() * wasteTypes.length)];
+        if (wasteTypeEl) {
+          wasteTypeEl.textContent = randomType;
+          wasteTypeEl.classList.add("result");
+        }
+        SimEngine.data.wasteType = randomType;
+      }, 5000);
     },
 
     checkBurnComplete() {
@@ -1064,6 +1093,7 @@
         SimEngine.data.wasteRemaining < SimEngine.data.wasteInitial * 0.12) {
         this.state.currentStep = 4;
         this.state.currentPhase = "COOLING";
+        SimEngine.data.reactorPhase = "COOLING";
         this.showStep(4);
         Dashboard.updateDashboardSessionUI();
         this.showFinalizeData();
@@ -1115,6 +1145,13 @@
       UI.text("summary-energy", energy + " Wh");
       UI.text("summary-co2", co2 + " kg");
       UI.text("summary-grade", grade);
+      UI.text("summary-waste-type", d.wasteType || "Unknown");
+
+      UI.visible("session-summary-dashboard", true);
+      UI.text("dash-summary-weight", (d.wasteInitial / 1000).toFixed(2) + " kg");
+      UI.text("dash-summary-energy", energy + " Wh");
+      UI.text("dash-summary-burned", burnedKg.toFixed(2) + " kg");
+      UI.text("dash-summary-type", d.wasteType || "Unknown");
 
       const gradeWrap = document.getElementById("summary-grade-wrap");
       if (gradeWrap) {
@@ -1139,6 +1176,7 @@
         grade: grade,
         energy: energy,
         waste: wasteKg,
+        wasteType: d.wasteType || "Mixed",
         temp: Math.round(850 + Math.random() * 100),
         smokeBefore: Math.round(350 + Math.random() * 200),
         smokeAfter: Math.round(20 + Math.random() * 40),
@@ -1151,6 +1189,7 @@
       // Reset
       this.state.currentPhase = "IDLE";
       this.state.currentStep = 0;
+      d.reactorPhase = "IDLE";
       d.wasteInitial = 0;
       d.wasteRemaining = 0;
       d.wasteBurned = 0;
@@ -1183,19 +1222,23 @@
       if (this.state.currentStep === 2) {
         UI.text("current-temp-step2", Math.round(d.reactorTemp) + "°C");
         
-        if (Math.round(d.reactorTemp) === 40) {
+        if (d.reactorTemp >= 40) {
           Toast.show("Temperature reached 40°C - Auto-advancing to Burning!");
           this.state.currentStep = 3;
           this.state.currentPhase = "BURNING";
           this.state.canGoBack = false;
+          this.state.sessionLocked = true;
           UI.visible("btn-back-to-step1", false);
           this.showStep(3);
           Dashboard.updateDashboardSessionUI();
+          UI.visible("session-lock-indicator", true);
+          this.startWasteClassification();
+          SimEngine.data.reactorPhase = "BURNING";
           haptic([100, 50, 100]);
           return;
         }
         
-        const ready = d.reactorTemp >= 300;
+        const ready = d.reactorTemp >= 40;
         const btn = document.getElementById("btn-ignite");
         if (btn) {
           btn.disabled = !ready;
@@ -1332,13 +1375,34 @@
     },
 
     generatePrediction() {
-      const types = ["Biomass", "Paper Mix", "Wood Chips", "Cardboard", "Dried Leaves"];
+      const types = ["Paper", "Plastic", "Mixed"];
+      
+      const wasteTypeCounts = {};
+      Reports.data.forEach(session => {
+        const type = session.wasteType || "Mixed";
+        wasteTypeCounts[type] = (wasteTypeCounts[type] || 0) + 1;
+      });
+      
+      let predictedType = types[Math.floor(Math.random() * types.length)];
+      let maxCount = 0;
+      for (const type in wasteTypeCounts) {
+        if (wasteTypeCounts[type] > maxCount) {
+          maxCount = wasteTypeCounts[type];
+          predictedType = type;
+        }
+      }
+      
       const times = [35, 40, 45, 50, 55, 60];
-
-      UI.text("pred-waste-type", types[Math.floor(Math.random() * types.length)]);
+      const avgEnergy = Reports.data.length > 0 
+        ? Reports.data.reduce((sum, s) => sum + s.energy, 0) / Reports.data.length 
+        : 35;
+      
+      const confidence = Math.min(95, 65 + (Reports.data.length * 3));
+      
+      UI.text("pred-waste-type", predictedType);
       UI.text("pred-time", times[Math.floor(Math.random() * times.length)] + "m");
-      UI.text("pred-energy", Math.round(randomRange(25, 55)) + " Wh");
-      UI.text("pred-confidence", Math.round(randomRange(78, 96)) + "%");
+      UI.text("pred-energy", Math.round(avgEnergy + randomRange(-10, 10)) + " Wh");
+      UI.text("pred-confidence", Math.round(confidence) + "%");
       Toast.show("🤖 Prediction refreshed");
     },
 
@@ -1474,12 +1538,12 @@
   // =========================================
   const Reports = {
     data: [
-      { id: "EP-4210", date: "Mar 29, 2026", grade: "A", energy: 42, waste: "2.4", temp: 860, smokeBefore: 420, smokeAfter: 38 },
-      { id: "EP-4209", date: "Mar 29, 2026", grade: "B", energy: 35, waste: "1.8", temp: 780, smokeBefore: 380, smokeAfter: 45 },
-      { id: "EP-4208", date: "Mar 28, 2026", grade: "A", energy: 45, waste: "2.5", temp: 890, smokeBefore: 450, smokeAfter: 32 },
-      { id: "EP-4207", date: "Mar 28, 2026", grade: "C", energy: 18, waste: "1.2", temp: 650, smokeBefore: 550, smokeAfter: 62 },
-      { id: "EP-4206", date: "Mar 27, 2026", grade: "A", energy: 48, waste: "2.6", temp: 910, smokeBefore: 400, smokeAfter: 28 },
-      { id: "EP-4205", date: "Mar 27, 2026", grade: "B", energy: 30, waste: "1.5", temp: 740, smokeBefore: 360, smokeAfter: 50 },
+      { id: "EP-4210", date: "Mar 29, 2026", grade: "A", energy: 42, waste: "2.4", wasteType: "Paper", temp: 860, smokeBefore: 420, smokeAfter: 38 },
+      { id: "EP-4209", date: "Mar 29, 2026", grade: "B", energy: 35, waste: "1.8", wasteType: "Plastic", temp: 780, smokeBefore: 380, smokeAfter: 45 },
+      { id: "EP-4208", date: "Mar 28, 2026", grade: "A", energy: 45, waste: "2.5", wasteType: "Mixed", temp: 890, smokeBefore: 450, smokeAfter: 32 },
+      { id: "EP-4207", date: "Mar 28, 2026", grade: "C", energy: 18, waste: "1.2", wasteType: "Plastic", temp: 650, smokeBefore: 550, smokeAfter: 62 },
+      { id: "EP-4206", date: "Mar 27, 2026", grade: "A", energy: 48, waste: "2.6", wasteType: "Paper", temp: 910, smokeBefore: 400, smokeAfter: 28 },
+      { id: "EP-4205", date: "Mar 27, 2026", grade: "B", energy: 30, waste: "1.5", wasteType: "Mixed", temp: 740, smokeBefore: 360, smokeAfter: 50 },
     ],
     filteredData: [],
     searchQuery: "",
@@ -1708,16 +1772,49 @@
   };
 
   window.FanControl = {
+    currentSpeed: 0,
+    setSpeed(value) {
+      this.currentSpeed = parseInt(value);
+      UI.text("fan1-speed", value + "%");
+    },
     setMode(mode) {
       SimEngine.data.fanMode = mode;
-      UI.toggleClass("fan-auto", "active", mode === "auto");
-      UI.toggleClass("fan-on", "active", mode === "on");
-      UI.toggleClass("fan-off", "active", mode === "off");
+      UI.toggleClass("fan1-auto", "active", mode === "auto");
+      UI.toggleClass("fan1-on", "active", mode === "on");
+      UI.toggleClass("fan1-off", "active", mode === "off");
+
+      const isOn = mode === "on" || (mode === "auto" && this.currentSpeed > 0);
+      const dot = document.getElementById("fan1-dot");
+      const text = document.getElementById("fan1-text");
+      if (dot) dot.className = "status-dot " + (isOn ? "status-dot--green" : "status-dot--gray");
+      if (text) text.textContent = isOn ? (mode === "auto" ? "Auto (" + this.currentSpeed + "%)" : "Running") : "Stopped";
 
       if (mode === "on") SimEngine.data.fanRunning = true;
       else if (mode === "off") SimEngine.data.fanRunning = false;
       SimEngine.updateFanUI();
-      Toast.show("Fan: " + mode.toUpperCase());
+      Toast.show("Filtration Fan: " + mode.toUpperCase());
+      haptic(5);
+    },
+  };
+
+  window.Fan2Control = {
+    currentSpeed: 0,
+    setSpeed(value) {
+      this.currentSpeed = parseInt(value);
+      UI.text("fan2-speed", value + "%");
+    },
+    setMode(mode) {
+      UI.toggleClass("fan2-auto", "active", mode === "auto");
+      UI.toggleClass("fan2-on", "active", mode === "on");
+      UI.toggleClass("fan2-off", "active", mode === "off");
+
+      const isOn = mode === "on" || (mode === "auto" && this.currentSpeed > 0);
+      const dot = document.getElementById("fan2-dot");
+      const text = document.getElementById("fan2-text");
+      if (dot) dot.className = "status-dot " + (isOn ? "status-dot--green" : "status-dot--gray");
+      if (text) text.textContent = isOn ? (mode === "auto" ? "Auto (" + this.currentSpeed + "%)" : "Running") : "Stopped";
+
+      Toast.show("TEG Fan: " + mode.toUpperCase());
       haptic(5);
     },
   };

@@ -2366,6 +2366,32 @@ body {
   gap: 12px;
 }
 
+.session-summary-dashboard {
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--color-surface-2);
+  border-radius: 12px;
+}
+
+.summary-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.summary-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.summary-stat-value {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: monospace;
+}
+
 .btn-session {
   flex: 1;
   height: 46px;
@@ -3920,6 +3946,63 @@ body {
 
 .hardware-card {
   padding: 16px;
+}
+
+.fan-speed-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.fan-speed-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-surface-3);
+  outline: none;
+}
+
+.fan-speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.fan-speed-value {
+  min-width: 40px;
+  text-align: right;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.waste-type-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  background: var(--color-surface-2);
+  border-radius: 12px;
+  margin-top: 12px;
+}
+
+.waste-type-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--eco-light);
+  animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+.waste-type-value.result {
+  animation: none;
+  color: var(--eco-mid);
 }
 
 .hardware-card__header {
