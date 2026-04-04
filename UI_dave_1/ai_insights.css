@@ -1,0 +1,111 @@
+/* AI Insights Variables */
+:root {
+  --ai-purple: #a855f7;
+  --ai-green: #22c55e;
+  --ai-blue: #3b82f6;
+  --ai-orange: #f97316;
+}
+
+/* Global Confidence Header */
+.ai-global-confidence {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.ai-global-confidence .confidence-val {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ai-green);
+}
+
+/* Logic List */
+.ai-logic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.ai-logic-item {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.1);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ai-logic-item:hover {
+  background: rgba(168, 85, 247, 0.05);
+  border-color: rgba(168, 85, 247, 0.3);
+  transform: translateY(-1px);
+}
+
+.logic-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.logic-item-id {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.logic-item-waste {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.logic-item-waste--Paper { color: var(--ai-green); }
+.logic-item-waste--Plastic { color: var(--ai-purple); }
+.logic-item-waste--Mixed { color: var(--ai-orange); }
+
+/* Rationale Pill */
+.logic-rationale-pill {
+  background: rgba(168, 85, 247, 0.08);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.logic-rationale-pill i {
+  color: var(--ai-purple);
+  font-size: 12px;
+  margin-top: 1px;
+}
+
+/* Modal Rationale Section */
+.detail-section--ai-rationale {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.05), rgba(99, 102, 241, 0.05));
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.ai-rationale-header {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.ai-rationale-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}

@@ -1364,7 +1364,7 @@
       this.renderTrend();
       this.updateComparison();
       if (!this.initialized) {
-        this.generatePrediction();
+        this.renderLogicLog();
         this.initialized = true;
       }
     },
@@ -1457,43 +1457,52 @@
       }
     },
 
-    generatePrediction() {
-      const types = ["Paper", "Plastic", "Mixed"];
-      
-      const wasteTypeCounts = {};
-      Reports.data.forEach(session => {
-        const type = session.wasteType || "Mixed";
-        wasteTypeCounts[type] = (wasteTypeCounts[type] || 0) + 1;
-      });
-      
-      // Better tie-breaking for predictions: pick randomly if counts are equal
-      let maxCount = -1;
-      let topTypes = [];
-      for (const type in wasteTypeCounts) {
-        if (wasteTypeCounts[type] > maxCount) {
-          maxCount = wasteTypeCounts[type];
-          topTypes = [type];
-        } else if (wasteTypeCounts[type] === maxCount) {
-          topTypes.push(type);
-        }
+    getRationale(session) {
+      const t = session.temp || 850;
+      const s = session.smokeBefore || 400;
+      const type = session.wasteType || "Mixed";
+
+      if (type.includes("Paper")) {
+        if (t > 800) return "Clean burn at high heat — strong signature of dry cellulose/paper.";
+        return "Steady temperature rise points to moderate-density biomass like paper.";
+      } else if (type.includes("Plastic")) {
+        if (s > 400) return "High-density smoke particles detected; matches synthetic polymer profiles.";
+        return "Burn rate fluctuates, typical of melting plastic materials.";
+      } else {
+        if (t < 750 && s > 300) return "Lower heat with dense smoke indicates mixed or damp organic matter.";
+        return "Sensor readings show varied particulate size, typical of mixed waste.";
       }
+    },
+
+    renderLogicLog() {
+      const container = document.getElementById("ai-logic-log");
+      if (!container) return;
+
+      // Get the 3 most recent sessions
+      const recent = Reports.data.slice(0, 3);
       
-      let predictedType = topTypes.length > 0
-        ? topTypes[Math.floor(Math.random() * topTypes.length)]
-        : types[Math.floor(Math.random() * types.length)];
+      container.innerHTML = recent.map((session, idx) => {
+        const type = session.wasteType || "Mixed";
+        const icon = type.includes("Paper") ? "bi-file-earmark-text" : type.includes("Plastic") ? "bi-box-seam" : "bi-collection";
+        const rationale = this.getRationale(session);
+        
+        return `
+          <div class="ai-logic-item" onclick="Reports.openDetail(${idx})">
+            <div class="logic-item-header">
+              <span class="logic-item-id">${session.id}</span>
+              <span class="logic-item-waste logic-item-waste--${type.split(' ')[0]}">
+                <i class="bi ${icon}"></i> ${type}
+              </span>
+            </div>
+            <div class="logic-rationale-pill">
+              <i class="bi bi-robot"></i>
+              <span>${rationale}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
       
-      const times = [35, 40, 45, 50, 55, 60];
-      const avgEnergy = Reports.data.length > 0 
-        ? Reports.data.reduce((sum, s) => sum + s.energy, 0) / Reports.data.length 
-        : 35;
-      
-      const confidence = Math.min(95, 65 + (Reports.data.length * 3));
-      
-      UI.text("pred-waste-type", predictedType);
-      UI.text("pred-time", times[Math.floor(Math.random() * times.length)] + "m");
-      UI.text("pred-energy", Math.round(avgEnergy + randomRange(-10, 10)) + " Wh");
-      UI.text("pred-confidence", Math.round(confidence) + "%");
-      Toast.show("🤖 Prediction refreshed");
+      Toast.show("🤖 AI Logic Synced");
     },
 
     updateRange(val) {
@@ -1728,6 +1737,11 @@
       UI.text("detail-burned", (parseFloat(item.waste) - parseFloat(finalWaste)).toFixed(1) + " kg");
       UI.text("detail-smoke-before", (item.smokeBefore || 450) + " PPM");
       UI.text("detail-smoke-after", (item.smokeAfter || 45) + " PPM");
+      
+      const rationaleEl = document.getElementById("detail-ai-rationale");
+      if (rationaleEl) {
+        rationaleEl.textContent = Analytics.getRationale(item);
+      }
 
       const gradeBadge = document.getElementById("detail-grade-badge");
       if (gradeBadge) {

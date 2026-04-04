@@ -26,6 +26,7 @@
 
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="ai_prediction.css" />
+  <link rel="stylesheet" href="ai_insights.css" />
 </head>
 
 <body>
@@ -792,35 +793,25 @@
                 </div>
               </div>
 
-              <!-- AI Predictions -->
+              <!-- AI Insights -->
               <div class="glass-card ai-prediction-card">
                 <div class="card-header">
                   <div class="card-header__left">
                     <div class="icon-box icon-box--purple"><i class="bi bi-cpu"></i></div>
-                    <span class="card-title">AI Predictions</span>
+                    <span class="card-title">AI Prediction Insights</span>
                   </div>
-                  <span class="ai-badge"><i class="bi bi-stars"></i> ML POWERED</span>
-                </div>
-                <div class="prediction-grid">
-                  <div class="pred-item pred-item--blue">
-                    <span class="tiny-label">WASTE TYPE</span>
-                    <span id="pred-waste-type" class="pred-value">Biomass</span>
-                  </div>
-                  <div class="pred-item pred-item--purple">
-                    <span class="tiny-label">EST. TIME</span>
-                    <span id="pred-time" class="pred-value">45m</span>
-                  </div>
-                  <div class="pred-item pred-item--yellow">
-                    <span class="tiny-label">EST. ENERGY</span>
-                    <span id="pred-energy" class="pred-value">35 Wh</span>
-                  </div>
-                  <div class="pred-item pred-item--green">
-                    <span class="tiny-label">CONFIDENCE</span>
-                    <span id="pred-confidence" class="pred-value">87%</span>
+                  <div class="ai-global-confidence">
+                    <span class="tiny-label">SYSTEM ACCURACY</span>
+                    <span class="confidence-val">94%</span>
                   </div>
                 </div>
-                <button class="btn-refresh-pred" onclick="Analytics.generatePrediction()">
-                  <i class="bi bi-arrow-repeat"></i> REFRESH PREDICTION
+                
+                <div id="ai-logic-log" class="ai-logic-list">
+                  <!-- Injected by JS -->
+                </div>
+                
+                <button class="btn-refresh-pred" onclick="Analytics.renderLogicLog()">
+                  <i class="bi bi-arrow-repeat"></i> RE-SYNC LOGIC
                 </button>
               </div>
             </div><!-- END screen-analytics -->
@@ -1438,6 +1429,14 @@
                 </button>
               </div>
               <div class="modal-body modal-body--scroll">
+                <!-- AI Diagnosis Rationale -->
+                <div class="detail-section detail-section--ai-rationale">
+                  <div class="ai-rationale-header">
+                    <span class="tiny-label" style="color: var(--purple);"><i class="bi bi-stars"></i> AI DIAGNOSIS RATIONALE</span>
+                  </div>
+                  <p id="detail-ai-rationale" class="ai-rationale-text">...</p>
+                </div>
+
                 <!-- Status Icons Row -->
                 <div class="detail-status-grid">
                   <div class="detail-status-item">
