@@ -1,0 +1,74 @@
+/* AI Analysis in Step 3 */
+.ai-analysis-container {
+  margin-top: 16px;
+  background: rgba(168, 85, 247, 0.04);
+  border: 1px solid rgba(168, 85, 247, 0.1);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.card-header--mini {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-header--mini .tiny-label {
+  color: #a855f7;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+}
+
+.ai-badge--mini {
+  font-size: 7px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  color: #a855f7;
+  font-weight: 800;
+}
+
+.prediction-grid--step3 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.prediction-grid--step3 .pred-item {
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prediction-grid--step3 .pred-value {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.prediction-grid--step3 .tiny-label {
+  font-size: 7px;
+  opacity: 0.6;
+}
+
+.scanning-pulse {
+  animation: scanningEffect 1.5s infinite;
+  color: #a855f7;
+}
+
+@keyframes scanningEffect {
+  0% { opacity: 0.4; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.4; transform: scale(0.98); }
+}

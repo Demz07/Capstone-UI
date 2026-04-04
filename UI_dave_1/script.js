@@ -701,7 +701,7 @@
         this.sensorChart = new Chart(ctx, {
           type: "line",
           data: { labels: Array(30).fill(""), datasets },
-          options: chartOptions(yMax, false, type === "air"),
+          options: chartOptions(yMax),
         });
       }, 100);
     },
@@ -728,7 +728,7 @@
     },
   };
 
-  function chartOptions(yMax, showGrid = false, showYAxis = false) {
+  function chartOptions(yMax, showGrid = false, showYAxis = true) {
     const isLight = document.documentElement.classList.contains("light-mode");
     return {
       responsive: true,
@@ -783,7 +783,7 @@
               },
             ],
           },
-          options: chartOptions(1000, false, true),
+          options: chartOptions(1000),
         });
       }
 
@@ -925,7 +925,11 @@
             plugins: { legend: { display: false } },
             scales: {
               x: { grid: { display: false }, ticks: { color: "rgba(255,255,255,0.3)", font: { size: 9 } } },
-              y: { display: false },
+              y: { 
+                display: true,
+                grid: { display: false },
+                ticks: { color: "rgba(255,255,255,0.3)", font: { size: 9 } }
+              },
             },
             animation: { duration: 600 },
           },
@@ -1100,22 +1104,69 @@
     },
 
     startWasteClassification() {
-      const wasteTypeEl = document.getElementById("waste-type-value");
-      if (!wasteTypeEl) return;
-      
-      wasteTypeEl.textContent = "Analyzing...";
-      wasteTypeEl.classList.remove("result");
-      
-      const wasteTypes = ["Paper", "Plastic", "Mixed (Plastic & Paper)"];
-      
-      setTimeout(() => {
-        const randomType = wasteTypes[Math.floor(Math.random() * wasteTypes.length)];
-        if (wasteTypeEl) {
-          wasteTypeEl.textContent = randomType;
-          wasteTypeEl.classList.add("result");
+      // Initialize real-time prediction UI
+      const elements = ["waste-type", "time", "energy", "confidence"];
+      elements.forEach(el => {
+        const item = document.getElementById(`step3-pred-${el}`);
+        if (item) {
+          item.textContent = "Scanning...";
+          item.classList.add("scanning-pulse");
         }
-        SimEngine.data.wasteType = randomType;
-      }, 3000); // 3 seconds is enough for processing effect
+      });
+      SimEngine.data.wasteType = "Analyzing...";
+    },
+
+    updateRealTimePrediction() {
+      const d = SimEngine.data;
+      if (this.state.currentPhase !== "BURNING") return;
+
+      // Dynamic prediction logic based on simulated smoke and temperature
+      let type = "Mixed";
+      let confidence = 0;
+      let timeStr = "45m";
+      let energyStr = "35 Wh";
+
+      // Simulation logic: High smoke suggests plastic/mixed, High temp suggests dry paper/biomass
+      if (d.aqiRaw > 450) {
+        type = "Plastic";
+        confidence = clamp(72 + (d.aqiRaw / 30), 75, 94);
+      } else if (d.reactorTemp > 820) {
+        type = "Paper";
+        confidence = clamp(85 + (d.reactorTemp / 120), 88, 98);
+      } else {
+        type = "Mixed (Plastic & Paper)";
+        confidence = clamp(65 + (SimEngine.tickCount % 15), 68, 89);
+      }
+
+      // Est remaining time based on current burn rate trend
+      const avgBurnRate = (d.wasteInitial / 60); 
+      if (avgBurnRate > 0) {
+        const remainingMinutes = Math.max(1, Math.ceil(d.wasteRemaining / (avgBurnRate * 1.5)));
+        timeStr = remainingMinutes + "m";
+      }
+
+      // Est energy based on accumulated + current power * remaining time
+      const estFutureEnergy = (d.powerOutput * (parseInt(timeStr) / 60));
+      const totalEstEnergy = Math.round(d.energyAccumulated + estFutureEnergy + 5); 
+      energyStr = totalEstEnergy + " Wh";
+
+      // Update UI periodically to simulate "processing" updates
+      if (SimEngine.tickCount % 2 === 0) {
+        UI.text("step3-pred-waste-type", type);
+        UI.text("step3-pred-time", timeStr);
+        UI.text("step3-pred-energy", energyStr);
+        UI.text("step3-pred-confidence", Math.round(confidence) + "%");
+        
+        // Remove scanning pulse once prediction stabilizes
+        if (SimEngine.tickCount % 8 === 0) {
+          const elements = ["waste-type", "time", "energy", "confidence"];
+          elements.forEach(el => {
+            const item = document.getElementById(`step3-pred-${el}`);
+            if (item) item.classList.remove("scanning-pulse");
+          });
+        }
+        SimEngine.data.wasteType = type;
+      }
     },
 
     checkBurnComplete() {
@@ -1295,6 +1346,7 @@
         UI.text("step3-burned", Math.round(d.wasteBurned) + "g burned");
         UI.text("burned-weight", Math.round(d.wasteBurned) + "g of " + Math.round(d.wasteInitial) + "g");
 
+        this.updateRealTimePrediction();
         this.checkBurnComplete();
       }
     },

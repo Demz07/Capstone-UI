@@ -25,6 +25,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="ai_prediction.css" />
 </head>
 
 <body>
@@ -991,9 +992,30 @@
                           <span id="step3-battery" class="burn-val font-mono">--%</span>
                         </div>
                       </div>
-                      <div class="waste-type-display">
-                        <span class="tiny-label">WASTE TYPE</span>
-                        <div class="waste-type-value" id="waste-type-value">Analyzing...</div>
+                      <!-- AI Real-Time Analysis -->
+                      <div class="ai-analysis-container">
+                        <div class="card-header--mini">
+                          <span class="tiny-label"><i class="bi bi-cpu"></i> REAL-TIME AI ANALYSIS</span>
+                          <span class="ai-badge ai-badge--mini"><i class="bi bi-stars"></i> ML POWERED</span>
+                        </div>
+                        <div class="prediction-grid prediction-grid--step3">
+                          <div class="pred-item pred-item--blue">
+                            <span class="tiny-label">WASTE TYPE</span>
+                            <span id="step3-pred-waste-type" class="pred-value">Analyzing...</span>
+                          </div>
+                          <div class="pred-item pred-item--purple">
+                            <span class="tiny-label">EST. TIME</span>
+                            <span id="step3-pred-time" class="pred-value">--m</span>
+                          </div>
+                          <div class="pred-item pred-item--yellow">
+                            <span class="tiny-label">EST. ENERGY</span>
+                            <span id="step3-pred-energy" class="pred-value">-- Wh</span>
+                          </div>
+                          <div class="pred-item pred-item--green">
+                            <span class="tiny-label">CONFIDENCE</span>
+                            <span id="step3-pred-confidence" class="pred-value">--%</span>
+                          </div>
+                        </div>
                       </div>
                     <div class="burn-progress-section">
                       <div class="burn-progress-header">
