@@ -4445,6 +4445,12 @@ body {
   background: rgba(34, 197, 94, 0.04);
 }
 
+.btn-export--xlsx {
+  color: #16a34a;
+  border-color: rgba(22, 163, 74, 0.15);
+  background: rgba(22, 163, 74, 0.04);
+}
+
 .btn-export:active {
   transform: scale(0.95);
 }
