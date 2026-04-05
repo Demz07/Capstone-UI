@@ -266,14 +266,14 @@
       // Internal
       UI.text("battery-internal-pct", Math.round(d.batteryInternal) + "%");
       UI.width("battery-internal-fill", d.batteryInternal + "%");
-      UI.text("battery-internal-volt", d.voltageInternal + "V");
+      // UI.text("battery-internal-volt", d.voltageInternal + "V");
       this.setBatteryFillColor("battery-internal-fill", d.batteryInternal);
       this.setBatteryStatus("battery-internal-status", d.batteryInternalTrend);
 
       // Secondary
       UI.text("battery-secondary-pct", Math.round(d.batterySecondary) + "%");
       UI.width("battery-secondary-fill", d.batterySecondary + "%");
-      UI.text("battery-secondary-volt", d.voltageSecondary + "V");
+      // UI.text("battery-secondary-volt", d.voltageSecondary + "V");
       this.setBatteryStatus("battery-secondary-status", d.batterySecondaryTrend);
     },
 
