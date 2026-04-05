@@ -284,6 +284,9 @@
                     </div>
                   </div>
                   <div class="profile-dropdown__divider"></div>
+                  <button class="profile-dropdown__btn profile-dropdown__btn--settings" onclick="App.openProfileModal()">
+                    <i class="bi bi-gear"></i> Settings
+                  </button>
                   <button class="profile-dropdown__btn" onclick="AuthScreen.showLogoutModal(event)">
                     <i class="bi bi-box-arrow-right"></i> Log Out
                   </button>
@@ -1357,6 +1360,30 @@
                   onclick="AuthScreen.executeLogout()">
                   <i class="bi bi-box-arrow-right"></i> Log Out
                 </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Edit Modal -->
+          <div id="profileEditModal" class="app-modal" hidden>
+            <div class="app-modal__overlay" onclick="App.closeModal('profileEditModal')"></div>
+            <div class="app-modal__content profile-edit-modal">
+              <div class="modal-header">
+                <h3 class="app-modal__title">Edit Profile</h3>
+                <button class="close-btn" onclick="App.closeModal('profileEditModal')">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+              <div class="profile-edit-form">
+                <div class="form-group">
+                  <label>Name</label>
+                  <input type="text" id="profileEditName" class="neumorph-input" value="EcoPower User" />
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" id="profileEditEmail" class="neumorph-input" value="user@ecopower.io" readonly />
+                </div>
+                <button type="button" class="neumorph-btn" onclick="App.saveProfile()">Save Changes</button>
               </div>
             </div>
           </div>

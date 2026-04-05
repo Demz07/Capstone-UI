@@ -726,6 +726,28 @@
         });
       }, 100);
     },
+
+    openProfileModal() {
+      const nameEl = document.getElementById("profileEditName");
+      const emailEl = document.getElementById("profileEditEmail");
+      const currentName = document.querySelector(".profile-dropdown__name");
+      const currentEmail = document.querySelector(".profile-dropdown__email");
+
+      if (nameEl && currentName) nameEl.value = currentName.textContent;
+      if (emailEl && currentEmail) emailEl.value = currentEmail.textContent;
+
+      this.openModal("profileEditModal");
+    },
+
+    saveProfile() {
+      const nameEl = document.getElementById("profileEditName");
+      const currentName = document.querySelector(".profile-dropdown__name");
+
+      if (nameEl && currentName) currentName.textContent = nameEl.value;
+
+      this.closeModal("profileEditModal");
+      Toast.show("✅ Profile updated");
+    },
   };
 
   function chartOptions(yMax, showGrid = false, showYAxis = true) {
